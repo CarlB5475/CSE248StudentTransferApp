@@ -5,7 +5,7 @@ import java.sql.*;
 import utilities.SQLiteConnection;
 
 public class StudentDB {
-	private static Connection connection = resetConnection();
+	private static Connection connection;
 	
 	private StudentDB() {
 	}
@@ -19,12 +19,11 @@ public class StudentDB {
 		}
 	}
 	
-	public static Connection resetConnection() {
-		Connection connection = SQLiteConnection.studentDBConnector();
+	public static void resetConnection() {
+		connection = SQLiteConnection.studentDBConnector();
 		if(connection == null) {
 			System.out.println("Connection not successful");
 			System.exit(1);
 		}
-		return connection;
 	}
 }
