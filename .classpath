@@ -11,14 +11,15 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER">
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Jackson">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/James/Desktop/CSE248/CSE248-Projects/Nanas Student Transfer App/jackson-annotations-2.13.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/James/Desktop/CSE248/CSE248-Projects/Nanas Student Transfer App/jackson-core-2.13.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/James/Desktop/CSE248/CSE248-Projects/Nanas Student Transfer App/jackson-databind-2.13.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/James/Desktop/CSE248/CSE248-Projects/Nanas Student Transfer App/sqlite-jdbc-3.36.0.3.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JDBC_SQlite">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

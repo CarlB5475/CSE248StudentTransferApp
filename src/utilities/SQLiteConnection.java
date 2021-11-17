@@ -5,6 +5,8 @@ import java.net.*;
 import java.sql.*;
 import java.util.Scanner;
 
+import com.fasterxml.jackson.databind.*;
+
 public class SQLiteConnection {
 	
 	public static Connection connector() {
@@ -36,15 +38,15 @@ public class SQLiteConnection {
 					+ ")");
 			
 			statement.executeUpdate("CREATE TABLE IF NOT EXISTS colleges ("
-					+ "collegeId INTEGER PRIMARY KEY AUTOINCREMENT,"
+					+ "collegeId INTEGER PRIMARY KEY,"
 					+ "name VARCHAR(50) NOT NULL,"
 					+ "url VARCHAR(200),"
 					+ "city VARCHAR(200) NOT NULL, " 
 					+ "state VARCHAR(50) NOT NULL,"
 					+ "collegeZip VARCHAR(20) NOT NULL,"
-					+ "tuition FLOAT NOT NULL,"
+					+ "tuitionCost INTEGER NOT NULL,"
 					+ "studentSize INTEGER NOT NULL,"
-					+ "collegeType INTEGER NOT NULL" // 1 = public, 2 = private non-profit, 3 = private for-profit
+					+ "collegeType VARCHAR(30) NOT NULL" 
 					+ ")");
 			
 			statement.executeUpdate("CREATE TABLE IF NOT EXISTS favorites ("
@@ -67,10 +69,10 @@ public class SQLiteConnection {
 	}
 	
 	private static void initializeCollegeData(Connection conn) {
-		final String INITIAL_URL_STRING = "https://api.data.gov/ed/collegescorecard/v1/schools.json"
+		final String URL_STRING = "https://api.data.gov/ed/collegescorecard/v1/schools.json"
 				+ "?school.degrees_awarded.predominant=3,academics.program_bachelors_computer"
 				+ "&_fields=id,school.name,school.school_url,school.city,school.state,school.zip,"
-				+ "cost.avg_net_price.public,cost.avg_net_price.private,latest.student.size,school.ownership"
+				+ "latest.cost.attendance.academic_year,latest.student.size,school.ownership"
 				+ "&api_key=XZjJrfMKdwPnCZRvOpEYvnPEHFpBm7uvaY2Ibcu8"
 				+ "&_per_page=100";
 		
@@ -80,7 +82,7 @@ public class SQLiteConnection {
 		String inline = "";
 		
 		try {
-			URL url = new URL(INITIAL_URL_STRING);
+			URL url = new URL(URL_STRING);
 			
 			HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
 			urlConn.setRequestMethod("GET");
@@ -100,7 +102,59 @@ public class SQLiteConnection {
 			System.out.println(inline);
 			sc.close();
 			
+			ObjectMapper objectMapper = new ObjectMapper();
+			JsonNode node = objectMapper.readValue(inline, JsonNode.class);
+			JsonNode array = node.get("results");
+			
+			for(int i = 0; i < array.size(); i++) {
+				JsonNode currentNode = array.get(i);
+				addCollegeData(conn, currentNode);
+			}
+			
 		} catch (IOException e) {
+			System.out.println(e);
+			System.exit(1);
+		}
+	}
+	
+	private static void addCollegeData(Connection conn, JsonNode currentNode) {
+		JsonNode collegeIdNode = currentNode.get("id");
+		JsonNode nameNode = currentNode.get("school.name");
+		JsonNode urlNode = currentNode.get("school.school_url");
+		JsonNode cityNode = currentNode.get("school.city");
+		JsonNode stateNode = currentNode.get("school.state");
+		JsonNode collegeZipNode = currentNode.get("school.zip");
+		JsonNode averageCostNode = currentNode.get("latest.cost.attendance.academic_year");
+		JsonNode studentSizeNode = currentNode.get("latest.student.size");
+		JsonNode collegeTypeNode = currentNode.get("school.ownership"); // 1 = public, 2 = private non-profit, 3 = private for-profit
+		
+		String collegeTypeString = null;
+		switch (collegeTypeNode.asInt()) {
+			case 1: collegeTypeString = "Public";
+					break;
+			case 2: collegeTypeString = "Private Non-Profit";
+					break;
+			case 3: collegeTypeString = "Private For-Profit";
+					break;
+		}
+		
+		PreparedStatement preparedStatement = null;
+		String statementString = "INSERT INTO colleges (collegeId, name, url, city, state, collegeZip, tuitionCost, studentSize, collegeType)"
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		
+		try {
+			preparedStatement = conn.prepareStatement(statementString);
+			preparedStatement.setInt(1, collegeIdNode.asInt());
+			preparedStatement.setString(2, nameNode.asText());
+			preparedStatement.setString(3, urlNode.asText());
+			preparedStatement.setString(4, cityNode.asText());
+			preparedStatement.setString(5, stateNode.asText());
+			preparedStatement.setString(6, collegeZipNode.asText());
+			preparedStatement.setInt(7, averageCostNode.asInt());
+			preparedStatement.setInt(8, studentSizeNode.asInt());
+			preparedStatement.setString(9, collegeTypeString);
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
 			System.out.println(e);
 			System.exit(1);
 		}
