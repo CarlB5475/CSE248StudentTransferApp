@@ -79,54 +79,31 @@ public class SQLiteConnection {
 		if(hasCollegeData(conn)) // if there are colleges in the table, don't initialize
 			return;
 		
-		String inline = "";
+		long totalPages = Math.round(getTotalPages(URL_STRING));
 		
-		try {
-			URL url = new URL(URL_STRING);
+		for(int currentPage = 0; currentPage < totalPages; currentPage++) {
+			System.out.println("Current page: " + currentPage);
+			String currentUrlString = URL_STRING + "&_page=" + currentPage;
+			JsonNode currentMainNode = getMainNode(currentUrlString); // gets the node with the results in the current page
+			JsonNode currentResultsArr = currentMainNode.get("results");
 			
-			HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
-			urlConn.setRequestMethod("GET");
-			urlConn.connect();
-			int responsecode = urlConn.getResponseCode();
-			System.out.println("Response code is: " + responsecode);
-			
-			if (responsecode != 200) {
-				System.out.println("HttpResponseCode: " + responsecode);
-				System.exit(responsecode);
-			}
-			
-			Scanner sc = new Scanner(url.openStream());
-			while (sc.hasNext()) {
-				inline += sc.nextLine();
-			}
-			System.out.println(inline);
-			sc.close();
-			
-			ObjectMapper objectMapper = new ObjectMapper();
-			JsonNode node = objectMapper.readValue(inline, JsonNode.class);
-			JsonNode array = node.get("results");
-			
-			for(int i = 0; i < array.size(); i++) {
-				JsonNode currentNode = array.get(i);
+			for(int i = 0; i < currentResultsArr.size(); i++) {
+				JsonNode currentNode = currentResultsArr.get(i);
 				addCollegeData(conn, currentNode);
 			}
-			
-		} catch (IOException e) {
-			System.out.println(e);
-			System.exit(1);
 		}
 	}
 	
-	private static void addCollegeData(Connection conn, JsonNode currentNode) {
-		JsonNode collegeIdNode = currentNode.get("id");
-		JsonNode nameNode = currentNode.get("school.name");
-		JsonNode urlNode = currentNode.get("school.school_url");
-		JsonNode cityNode = currentNode.get("school.city");
-		JsonNode stateNode = currentNode.get("school.state");
-		JsonNode collegeZipNode = currentNode.get("school.zip");
-		JsonNode averageCostNode = currentNode.get("latest.cost.attendance.academic_year");
-		JsonNode studentSizeNode = currentNode.get("latest.student.size");
-		JsonNode collegeTypeNode = currentNode.get("school.ownership"); // 1 = public, 2 = private non-profit, 3 = private for-profit
+	private static void addCollegeData(Connection conn, JsonNode currentResultNode) {
+		JsonNode collegeIdNode = currentResultNode.get("id");
+		JsonNode nameNode = currentResultNode.get("school.name");
+		JsonNode urlNode = currentResultNode.get("school.school_url");
+		JsonNode cityNode = currentResultNode.get("school.city");
+		JsonNode stateNode = currentResultNode.get("school.state");
+		JsonNode collegeZipNode = currentResultNode.get("school.zip");
+		JsonNode averageCostNode = currentResultNode.get("latest.cost.attendance.academic_year");
+		JsonNode studentSizeNode = currentResultNode.get("latest.student.size");
+		JsonNode collegeTypeNode = currentResultNode.get("school.ownership"); // 1 = public, 2 = private non-profit, 3 = private for-profit
 		
 		String collegeTypeString = null;
 		switch (collegeTypeNode.asInt()) {
@@ -158,6 +135,48 @@ public class SQLiteConnection {
 			System.out.println(e);
 			System.exit(1);
 		}
+	}
+	
+	private static double getTotalPages(String urlString) {
+		JsonNode mainNode = getMainNode(urlString);
+		JsonNode metaDataNode = mainNode.get("metadata");
+		JsonNode totalField = metaDataNode.get("total");
+		JsonNode perPageField = metaDataNode.get("per_page");
+		
+		return Math.ceil(totalField.asDouble() / perPageField.asInt());
+	}
+	
+	private static JsonNode getMainNode(String urlString) {
+		String inline = "";
+		JsonNode mainNode = null;
+		
+		try {
+			URL url = new URL(urlString);
+			HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+			urlConn.setRequestMethod("GET");
+			urlConn.connect();
+			int responsecode = urlConn.getResponseCode();
+			
+			if (responsecode != 200) {
+				System.out.println("HttpResponseCode: " + responsecode);
+				System.exit(responsecode);
+			}
+			
+			Scanner sc = new Scanner(url.openStream());
+			while (sc.hasNext()) {
+				inline += sc.nextLine();
+			}
+			sc.close();
+			System.out.println(inline);
+			
+			ObjectMapper objectMapper = new ObjectMapper();
+			mainNode = objectMapper.readValue(inline, JsonNode.class);	
+		} catch (IOException e) {
+			System.out.println(e);
+			System.exit(1);
+		}
+		
+		return mainNode;
 	}
 	
 	private static boolean hasCollegeData(Connection conn) {
