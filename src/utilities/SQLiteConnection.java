@@ -3,6 +3,7 @@ package utilities;
 import java.io.IOException;
 import java.net.*;
 import java.sql.*;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 import com.fasterxml.jackson.databind.*;
@@ -46,7 +47,8 @@ public class SQLiteConnection {
 					+ "collegeZip VARCHAR(20) NOT NULL,"
 					+ "tuitionCost INTEGER NOT NULL,"
 					+ "studentSize INTEGER NOT NULL,"
-					+ "collegeType VARCHAR(30) NOT NULL" 
+					+ "collegeType VARCHAR(30) NOT NULL,"
+					+ "hasCSBachelorsDegree VARCHAR(10) NOT NULL" 
 					+ ")");
 			
 			statement.executeUpdate("CREATE TABLE IF NOT EXISTS favorites ("
@@ -70,9 +72,9 @@ public class SQLiteConnection {
 	
 	private static void initializeCollegeData(Connection conn) {
 		final String URL_STRING = "https://api.data.gov/ed/collegescorecard/v1/schools.json"
-				+ "?school.degrees_awarded.predominant=3,academics.program_bachelors_computer"
+				+ "?school.degrees_awarded.predominant=3,latest.academics.program.bachelors.computer"
 				+ "&_fields=id,school.name,school.school_url,school.city,school.state,school.zip,"
-				+ "latest.cost.attendance.academic_year,latest.student.size,school.ownership"
+				+ "latest.cost.attendance.academic_year,latest.student.size,school.ownership,latest.academics.program.bachelors.computer"
 				+ "&api_key=XZjJrfMKdwPnCZRvOpEYvnPEHFpBm7uvaY2Ibcu8"
 				+ "&_per_page=100";
 		
@@ -80,17 +82,10 @@ public class SQLiteConnection {
 			return;
 		
 		long totalPages = Math.round(getTotalPages(URL_STRING));
-		
-		for(int currentPage = 0; currentPage < totalPages; currentPage++) {
-			System.out.println("Current page: " + currentPage);
-			String currentUrlString = URL_STRING + "&_page=" + currentPage;
-			JsonNode currentMainNode = getMainNode(currentUrlString); // gets the node with the results in the current page
-			JsonNode currentResultsArr = currentMainNode.get("results");
-			
-			for(int i = 0; i < currentResultsArr.size(); i++) {
-				JsonNode currentNode = currentResultsArr.get(i);
-				addCollegeData(conn, currentNode);
-			}
+		LinkedList<JsonNode> nodesList = getNodesList(totalPages, URL_STRING);
+		for(int i = 0; i < nodesList.size(); i++) {
+			JsonNode currentNode = nodesList.get(i);
+			addCollegeData(conn, currentNode);
 		}
 	}
 	
@@ -104,6 +99,7 @@ public class SQLiteConnection {
 		JsonNode averageCostNode = currentResultNode.get("latest.cost.attendance.academic_year");
 		JsonNode studentSizeNode = currentResultNode.get("latest.student.size");
 		JsonNode collegeTypeNode = currentResultNode.get("school.ownership"); // 1 = public, 2 = private non-profit, 3 = private for-profit
+		JsonNode hasCSDegreeNode = currentResultNode.get("latest.academics.program.bachelors.computer");
 		
 		String collegeTypeString = null;
 		switch (collegeTypeNode.asInt()) {
@@ -115,9 +111,15 @@ public class SQLiteConnection {
 					break;
 		}
 		
+		String hasCSBachelorsDegreeString = null;
+		if(hasCSDegreeNode.asInt() > 0)
+			hasCSBachelorsDegreeString = "True";
+		else
+			hasCSBachelorsDegreeString = "False";
+		
 		PreparedStatement preparedStatement = null;
-		String statementString = "INSERT INTO colleges (collegeId, name, url, city, state, collegeZip, tuitionCost, studentSize, collegeType)"
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String statementString = "INSERT INTO colleges (collegeId, name, url, city, state, collegeZip, tuitionCost, studentSize, collegeType, hasCSBachelorsDegree)"
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		
 		try {
 			preparedStatement = conn.prepareStatement(statementString);
@@ -130,10 +132,33 @@ public class SQLiteConnection {
 			preparedStatement.setInt(7, averageCostNode.asInt());
 			preparedStatement.setInt(8, studentSizeNode.asInt());
 			preparedStatement.setString(9, collegeTypeString);
+			preparedStatement.setString(10, hasCSBachelorsDegreeString);
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println(e);
 			System.exit(1);
+		}
+	}
+	
+	private static LinkedList<JsonNode> getNodesList(long totalPages, String urlString) {
+		LinkedList<JsonNode> nodesList = new LinkedList<>();
+		for(int currentPage = 0; currentPage < totalPages; currentPage++) {
+			String currentUrlString = urlString + "&_page=" + currentPage;
+			JsonNode currentMainNode = getMainNode(currentUrlString); 
+			JsonNode currentResultsArrNode = currentMainNode.get("results"); // gets the node with the results in the current page
+			addCurrentFilteredNodes(nodesList, currentResultsArrNode); // adds filtered results from current page with bachelors CS degree to the list
+		}
+		return nodesList;
+	}
+	
+	private static void addCurrentFilteredNodes(LinkedList<JsonNode> nodesList, JsonNode resultsArrNode) {
+		final String FILTER_STRING = "latest.academics.program.bachelors.computer";
+		
+		for(int i = 0; i < resultsArrNode.size(); i++) {
+			JsonNode currentNode = resultsArrNode.get(i);
+			JsonNode filterNode = currentNode.get(FILTER_STRING);
+			if(filterNode.asInt() > 0)
+				nodesList.add(currentNode);
 		}
 	}
 	
@@ -142,7 +167,6 @@ public class SQLiteConnection {
 		JsonNode metaDataNode = mainNode.get("metadata");
 		JsonNode totalField = metaDataNode.get("total");
 		JsonNode perPageField = metaDataNode.get("per_page");
-		
 		return Math.ceil(totalField.asDouble() / perPageField.asInt());
 	}
 	
@@ -155,11 +179,11 @@ public class SQLiteConnection {
 			HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
 			urlConn.setRequestMethod("GET");
 			urlConn.connect();
-			int responsecode = urlConn.getResponseCode();
+			int responseCode = urlConn.getResponseCode();
 			
-			if (responsecode != 200) {
-				System.out.println("HttpResponseCode: " + responsecode);
-				System.exit(responsecode);
+			if (responseCode != 200) {
+				System.out.println("HttpResponseCode: " + responseCode);
+				System.exit(responseCode);
 			}
 			
 			Scanner sc = new Scanner(url.openStream());
@@ -167,7 +191,6 @@ public class SQLiteConnection {
 				inline += sc.nextLine();
 			}
 			sc.close();
-			System.out.println(inline);
 			
 			ObjectMapper objectMapper = new ObjectMapper();
 			mainNode = objectMapper.readValue(inline, JsonNode.class);	
