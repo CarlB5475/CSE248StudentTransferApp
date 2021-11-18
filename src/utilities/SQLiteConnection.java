@@ -45,7 +45,7 @@ public class SQLiteConnection {
 					+ "city VARCHAR(200) NOT NULL, " 
 					+ "state VARCHAR(50) NOT NULL,"
 					+ "collegeZip VARCHAR(20) NOT NULL,"
-					+ "tuitionCost INTEGER NOT NULL,"
+					+ "attendanceCost INTEGER NOT NULL,"
 					+ "studentSize INTEGER NOT NULL,"
 					+ "collegeType VARCHAR(30) NOT NULL,"
 					+ "hasCSBachelorsDegree VARCHAR(10) NOT NULL" 
@@ -118,7 +118,7 @@ public class SQLiteConnection {
 			hasCSBachelorsDegreeString = "False";
 		
 		PreparedStatement preparedStatement = null;
-		String statementString = "INSERT INTO colleges (collegeId, name, url, city, state, collegeZip, tuitionCost, studentSize, collegeType, hasCSBachelorsDegree)"
+		String statementString = "INSERT INTO colleges (collegeId, name, url, city, state, collegeZip, attendanceCost, studentSize, collegeType, hasCSBachelorsDegree)"
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		
 		try {
