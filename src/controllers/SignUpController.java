@@ -17,7 +17,18 @@ public class SignUpController implements Initializable {
 	@FXML private PasswordField passwordInput, reEnterPasswordInput;
 	
 	public void signUp(ActionEvent event) {
+		String firstName = firstNameInput.getText(), lastName = lastNameInput.getText();
+		String username = usernameInput.getText().toLowerCase(), zip = zipInput.getText();
+		String password = passwordInput.getText(), reEnteredPassword = reEnterPasswordInput.getText();
 		
+		boolean hasEmptyInputs = firstName.equals("") || lastName.equals("") || username.equals("") ||
+				zip.equals("") || password.equals("") || reEnteredPassword.equals("");
+		
+		if(hasEmptyInputs || !signUpModel.isValidAccount(firstName, lastName, username, zip, password, reEnteredPassword))
+			return;
+		
+		// To do: Add this new student account to the database
+		System.out.println("Sign up is successful");
 	}
 	
 	public void goToLogin(ActionEvent event) throws IOException {
