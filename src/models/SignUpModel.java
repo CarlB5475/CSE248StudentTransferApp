@@ -11,8 +11,64 @@ public class SignUpModel extends ConnectionModel {
 		super();
 	}
 	
-	public void addNewStudent(String firstName, String lastName, String username, String zip, String password, String reEnteredPassword) {
+	public void addNewStudent(String firstName, String lastName, String username, String zip, String password) {
+		username = username.toLowerCase();
+		int favoritesId = getFavoritesId();
 		
+		PreparedStatement preparedStatement = null;
+		String statementString = "INSERT INTO students (firstName, lastName, userName, password, zip, favoritesId)"
+				+ "VALUES (?, ?, ?, ?, ?, ?)";
+		
+		try {
+			resetConnection();
+			preparedStatement = getConnection().prepareStatement(statementString);
+			preparedStatement.setString(1, firstName);
+			preparedStatement.setString(2, lastName);
+			preparedStatement.setString(3, username);
+			preparedStatement.setString(4, password);
+			preparedStatement.setString(5, zip);
+			preparedStatement.setInt(6, favoritesId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.exit(1);
+		} finally {
+			try {
+				preparedStatement.close();
+				getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+		}
+	}
+	
+	private int getFavoritesId() {
+		resetConnection();
+		Statement statement = null;
+		ResultSet resultSet = null;
+		int favoritesId = 0;
+		
+		try {
+			statement = getConnection().createStatement();
+			statement.executeUpdate("INSERT INTO favorites DEFAULT VALUES"); // makes an empty favorites row with the favoritesId
+			resultSet = statement.executeQuery("SELECT * FROM favorites ORDER BY favoritesId DESC");
+			resultSet.first();
+			favoritesId = resultSet.getInt("favoritesId");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.exit(1);
+		} finally {
+			try {
+				statement.close();
+				resultSet.close();
+				getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+		}
+		
+		return favoritesId;
 	}
 	
 	public boolean isValidAccount(String firstName, String lastName, String username, String zip, String password, String reEnteredPassword) {
@@ -59,7 +115,17 @@ public class SignUpModel extends ConnectionModel {
 				return false;
 			}
 		} catch (SQLException e) {
-			return false;
+			e.printStackTrace();
+			System.exit(1);
+		} finally {
+			try {
+				preparedStatement.close();
+				resultSet.close();
+				getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
 		}
 		
 		return true;

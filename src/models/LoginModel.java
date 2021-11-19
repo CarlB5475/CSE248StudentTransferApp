@@ -20,7 +20,18 @@ public class LoginModel extends ConnectionModel {
 			resultSet = preparedStatement.executeQuery();
 			return resultSet.next();
 		} catch (SQLException e) {
+			e.printStackTrace();
+			System.exit(1);
 			return false;
+		} finally {
+			try {
+				preparedStatement.close();
+				resultSet.close();
+				getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
 		}
 	}
 }

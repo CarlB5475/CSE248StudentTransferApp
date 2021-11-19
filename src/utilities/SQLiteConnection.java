@@ -19,14 +19,15 @@ public class SQLiteConnection {
 			initializeCollegeData(conn);
 			return conn;
 		} catch (ClassNotFoundException | SQLException e) {
-			System.out.println(e);
+			e.printStackTrace();
 			return null;
 		}
 	}
 	
 	private static void initializeTables(Connection conn) {
+		Statement statement = null;
 		try {
-			Statement statement = conn.createStatement();
+			statement = conn.createStatement();
 			
 			statement.executeUpdate("CREATE TABLE IF NOT EXISTS students ("
 					+ "studentId INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -65,8 +66,15 @@ public class SQLiteConnection {
 					+ "collegeId10 INTEGER"
 					+ ")");
 		} catch (SQLException e) {
-			System.out.println(e);
+			e.printStackTrace();
 			System.exit(1);
+		} finally {
+			try {
+				statement.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
 		}
 	}
 	
@@ -135,7 +143,7 @@ public class SQLiteConnection {
 			preparedStatement.setString(10, hasCSBachelorsDegreeString);
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
-			System.out.println(e);
+			e.printStackTrace();
 			System.exit(1);
 		}
 	}
@@ -195,7 +203,7 @@ public class SQLiteConnection {
 			ObjectMapper objectMapper = new ObjectMapper();
 			mainNode = objectMapper.readValue(inline, JsonNode.class);	
 		} catch (IOException e) {
-			System.out.println(e);
+			e.printStackTrace();
 			System.exit(1);
 		}
 		
@@ -208,7 +216,7 @@ public class SQLiteConnection {
 			ResultSet result = statement.executeQuery("SELECT * FROM colleges");
 			return result.next();
 		} catch (SQLException e) {
-			System.out.println(e);
+			e.printStackTrace();
 			return false;
 		}
 	}

@@ -28,6 +28,7 @@ public class SignUpController implements Initializable {
 			return;
 		
 		// To do: Add this new student account to the database
+		signUpModel.addNewStudent(firstName, lastName, username, zip, password);
 		System.out.println("Sign up is successful");
 	}
 	
