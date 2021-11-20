@@ -145,6 +145,13 @@ public class SQLiteConnection {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.exit(1);
+		} finally {
+			try {
+				preparedStatement.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
 		}
 	}
 	
@@ -211,13 +218,23 @@ public class SQLiteConnection {
 	}
 	
 	private static boolean hasCollegeData(Connection conn) {
+		Statement statement = null;
+		ResultSet resultSet = null;
 		try {
-			Statement statement = conn.createStatement();
-			ResultSet result = statement.executeQuery("SELECT * FROM colleges");
-			return result.next();
+			statement = conn.createStatement();
+			resultSet = statement.executeQuery("SELECT * FROM colleges");
+			return resultSet.next();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+			try {
+				statement.close();
+				resultSet.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
 		}
 	}
 }

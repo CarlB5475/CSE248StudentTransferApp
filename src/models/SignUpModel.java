@@ -28,6 +28,7 @@ public class SignUpModel extends ConnectionModel {
 			preparedStatement.setString(4, password);
 			preparedStatement.setString(5, zip);
 			preparedStatement.setInt(6, favoritesId);
+			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -52,7 +53,7 @@ public class SignUpModel extends ConnectionModel {
 			statement = getConnection().createStatement();
 			statement.executeUpdate("INSERT INTO favorites DEFAULT VALUES"); // makes an empty favorites row with the favoritesId
 			resultSet = statement.executeQuery("SELECT * FROM favorites ORDER BY favoritesId DESC");
-			resultSet.first();
+			resultSet.next();
 			favoritesId = resultSet.getInt("favoritesId");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -134,7 +135,7 @@ public class SignUpModel extends ConnectionModel {
 	private boolean isValidZip(String zip) {
 		Alert zipAlert = new Alert(AlertType.ERROR);
 		zipAlert.setTitle("Invalid Zip Code Alert!");
-		zipAlert.setHeaderText("Your zip code needs to contain numbers only or be in the format \"01234-5678\"!");
+		zipAlert.setHeaderText("Your zip code needs to contain numbers only and be 5 numbers long, or be in the format \"01234-5678\"!");
 		zipAlert.setContentText("Enter a valid zip code!");
 		
 		if(zip.contains("-")) {
@@ -150,7 +151,7 @@ public class SignUpModel extends ConnectionModel {
 					return false;
 				}
 			}
-		} else if(!zip.matches("[0-9]+")) {
+		} else if(zip.length() != 5 || !zip.matches("[0-9]+")) {
 			zipAlert.showAndWait();
 			return false;
 		}
