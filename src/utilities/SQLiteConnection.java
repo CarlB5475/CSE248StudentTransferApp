@@ -36,6 +36,8 @@ public class SQLiteConnection {
 					+ "userName VARCHAR(50) NOT NULL UNIQUE,"
 					+ "password VARCHAR(50) NOT NULL,"
 					+ "zip VARCHAR(20) NOT NULL,"
+					+ "latitude DOUBLE NOT NULL,"
+					+ "longitude DOUBLE NOT NULL,"
 					+ "favoritesId INTEGER NOT NULL"
 					+ ")");
 			
@@ -46,6 +48,8 @@ public class SQLiteConnection {
 					+ "city VARCHAR(200) NOT NULL, " 
 					+ "state VARCHAR(50) NOT NULL,"
 					+ "collegeZip VARCHAR(20) NOT NULL,"
+					+ "latitude DOUBLE NOT NULL,"
+					+ "longitude DOUBLE NOT NULL,"
 					+ "attendanceCost INTEGER NOT NULL,"
 					+ "studentSize INTEGER NOT NULL,"
 					+ "collegeType VARCHAR(30) NOT NULL,"
@@ -81,7 +85,7 @@ public class SQLiteConnection {
 	private static void initializeCollegeData(Connection conn) {
 		final String URL_STRING = "https://api.data.gov/ed/collegescorecard/v1/schools.json"
 				+ "?school.degrees_awarded.predominant=3,latest.academics.program.bachelors.computer"
-				+ "&_fields=id,school.name,school.school_url,school.city,school.state,school.zip,"
+				+ "&_fields=id,school.name,school.school_url,school.city,school.state,school.zip,location.lat,location.lon,"
 				+ "latest.cost.attendance.academic_year,latest.student.size,school.ownership,latest.academics.program.bachelors.computer"
 				+ "&api_key=XZjJrfMKdwPnCZRvOpEYvnPEHFpBm7uvaY2Ibcu8"
 				+ "&_per_page=100";
@@ -104,6 +108,8 @@ public class SQLiteConnection {
 		JsonNode cityNode = currentResultNode.get("school.city");
 		JsonNode stateNode = currentResultNode.get("school.state");
 		JsonNode collegeZipNode = currentResultNode.get("school.zip");
+		JsonNode latNode = currentResultNode.get("location.lat");
+		JsonNode lonNode = currentResultNode.get("location.lon");
 		JsonNode averageCostNode = currentResultNode.get("latest.cost.attendance.academic_year");
 		JsonNode studentSizeNode = currentResultNode.get("latest.student.size");
 		JsonNode collegeTypeNode = currentResultNode.get("school.ownership"); // 1 = public, 2 = private non-profit, 3 = private for-profit
@@ -126,8 +132,12 @@ public class SQLiteConnection {
 			hasCSBachelorsDegreeString = "False";
 		
 		PreparedStatement preparedStatement = null;
-		String statementString = "INSERT INTO colleges (collegeId, name, url, city, state, collegeZip, attendanceCost, studentSize, collegeType, hasCSBachelorsDegree)"
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String statementString = "INSERT INTO colleges (collegeId, name, url, city, state, collegeZip, latitude, longitude,"
+				+ "attendanceCost, studentSize, collegeType, hasCSBachelorsDegree)"
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		/* 1 = collegeId, 2 = name, 3 = url, 4 = city, 5 = state, 6 = collegeZip, 7 = latitude, 8 = longitude
+		 * 9 = attendanceCost, 10 = studentSize, 11 = collegeType, 12 = hasCSBachelorsDegree
+		 */
 		
 		try {
 			preparedStatement = conn.prepareStatement(statementString);
@@ -137,10 +147,12 @@ public class SQLiteConnection {
 			preparedStatement.setString(4, cityNode.asText());
 			preparedStatement.setString(5, stateNode.asText());
 			preparedStatement.setString(6, collegeZipNode.asText());
-			preparedStatement.setInt(7, averageCostNode.asInt());
-			preparedStatement.setInt(8, studentSizeNode.asInt());
-			preparedStatement.setString(9, collegeTypeString);
-			preparedStatement.setString(10, hasCSBachelorsDegreeString);
+			preparedStatement.setDouble(7, latNode.asDouble());
+			preparedStatement.setDouble(8, lonNode.asDouble());
+			preparedStatement.setInt(9, averageCostNode.asInt());
+			preparedStatement.setInt(10, studentSizeNode.asInt());
+			preparedStatement.setString(11, collegeTypeString);
+			preparedStatement.setString(12, hasCSBachelorsDegreeString);
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -179,9 +191,9 @@ public class SQLiteConnection {
 	
 	private static double getTotalPages(String urlString) {
 		JsonNode mainNode = getMainNode(urlString);
-		JsonNode metaDataNode = mainNode.get("metadata");
-		JsonNode totalField = metaDataNode.get("total");
-		JsonNode perPageField = metaDataNode.get("per_page");
+		JsonNode metadataNode = mainNode.get("metadata");
+		JsonNode totalField = metadataNode.get("total");
+		JsonNode perPageField = metadataNode.get("per_page");
 		return Math.ceil(totalField.asDouble() / perPageField.asInt());
 	}
 	

@@ -13,7 +13,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SignUpController">
    <top>
       <HBox alignment="CENTER" prefHeight="62.0" prefWidth="600.0" BorderPane.alignment="CENTER">
@@ -43,6 +42,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
                   <TextField fx:id="firstNameInput" maxWidth="-Infinity" promptText="First Name" />
@@ -51,6 +51,8 @@
                   <TextField fx:id="zipInput" maxWidth="-Infinity" promptText="Zip Code" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <PasswordField fx:id="passwordInput" maxWidth="-Infinity" promptText="Password" GridPane.rowIndex="2" />
                   <PasswordField fx:id="reEnterPasswordInput" maxWidth="-Infinity" promptText="Re-enter Password" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <TextField fx:id="latInput" maxWidth="-Infinity" promptText="Latitude of Location" GridPane.rowIndex="3" />
+                  <TextField fx:id="lonInput" maxWidth="-Infinity" promptText="Longitude of Location" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                </children>
             </GridPane>
          </children>

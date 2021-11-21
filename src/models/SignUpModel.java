@@ -11,13 +11,19 @@ public class SignUpModel extends ConnectionModel {
 		super();
 	}
 	
-	public void addNewStudent(String firstName, String lastName, String username, String zip, String password) {
+	public void addNewStudent(String firstName, String lastName, String username, String zip, String latitude, String longitude, String password) {
 		username = username.toLowerCase();
 		int favoritesId = getFavoritesId();
 		
+		final double PRECISION_NUMBER = 1000000; // The number of zeros determines the number of decimal places for rounding
+		double latDouble = Double.parseDouble(latitude), lonDouble = Double.parseDouble(longitude);
+		latDouble = Math.round(latDouble * PRECISION_NUMBER) / PRECISION_NUMBER; // This rounds the latitude and longitude by 6 decimal places
+		lonDouble = Math.round(lonDouble * PRECISION_NUMBER) / PRECISION_NUMBER;
+		
 		PreparedStatement preparedStatement = null;
-		String statementString = "INSERT INTO students (firstName, lastName, userName, password, zip, favoritesId)"
-				+ "VALUES (?, ?, ?, ?, ?, ?)";
+		String statementString = "INSERT INTO students (firstName, lastName, userName, password, zip, latitude, longitude, favoritesId)"
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+		// 1 = firstName, 2 = lastName, 3 = userName, 4 = password, 5 = zip, 6 = latitude, 7 = longitude, 8 = favoritesId
 		
 		try {
 			resetConnection();
@@ -27,7 +33,9 @@ public class SignUpModel extends ConnectionModel {
 			preparedStatement.setString(3, username);
 			preparedStatement.setString(4, password);
 			preparedStatement.setString(5, zip);
-			preparedStatement.setInt(6, favoritesId);
+			preparedStatement.setDouble(6, latDouble);
+			preparedStatement.setDouble(7, lonDouble);
+			preparedStatement.setInt(8, favoritesId);
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -72,10 +80,11 @@ public class SignUpModel extends ConnectionModel {
 		return favoritesId;
 	}
 	
-	public boolean isValidAccount(String firstName, String lastName, String username, String zip, String password, String reEnteredPassword) {
-		return isValidName(firstName, lastName) && isValidUsername(username) && isValidZip(zip) && isValidPassword(password, reEnteredPassword);
+	public boolean isValidAccount(String firstName, String lastName, String username, String zip, String latitude, String longitude, String password, String reEnteredPassword) {
+		return isValidName(firstName, lastName) && isValidUsername(username) && 
+				isValidZip(zip) && isValidLocation(latitude, longitude) && isValidPassword(password, reEnteredPassword);
 	}
-	
+
 	private boolean isValidName(String firstName, String lastName) {
 		Alert nameAlert = new Alert(AlertType.ERROR);
 		nameAlert.setTitle("Invalid Name Error!");
@@ -153,6 +162,32 @@ public class SignUpModel extends ConnectionModel {
 			}
 		} else if(zip.length() != 5 || !zip.matches("[0-9]+")) {
 			zipAlert.showAndWait();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	private boolean isValidLocation(String latitude, String longitude) {
+		Alert locationAlert = new Alert(AlertType.ERROR);
+		locationAlert.setTitle("Invalid Location Error!");
+		locationAlert.setContentText("Enter a valid latitude and longitude!");
+		
+		try {
+			double latDouble = Double.parseDouble(latitude); // Tests if these string values would throw a NumberFormatException
+			double lonDouble = Double.parseDouble(longitude);
+			
+			// The range for latitude and longitude has to be from -90 to 90 degrees and -180 to 180 degrees respectively
+			boolean latInRange = latDouble >= -90 && latDouble <= 90;
+			boolean lonInRange = lonDouble >= -180 && lonDouble <= 180;
+			if(!latInRange || !lonInRange) {
+				locationAlert.setHeaderText("The latitude needs to be between -90 and 90 degrees and the longitude needs to be between -180 and 180 degrees!");
+				locationAlert.showAndWait();
+				return false;
+			}
+		} catch (NumberFormatException e) {
+			locationAlert.setHeaderText("Your latitude and longitude need to be numberical values!");
+			locationAlert.showAndWait();
 			return false;
 		}
 		
