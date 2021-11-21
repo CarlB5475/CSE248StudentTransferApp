@@ -95,10 +95,7 @@ public class SQLiteConnection {
 		
 		long totalPages = Math.round(getTotalPages(URL_STRING));
 		LinkedList<JsonNode> nodesList = getNodesList(totalPages, URL_STRING);
-		for(int i = 0; i < nodesList.size(); i++) {
-			JsonNode currentNode = nodesList.get(i);
-			addCollegeData(conn, currentNode);
-		}
+		nodesList.forEach(node -> addCollegeData(conn, node));
 	}
 	
 	private static void addCollegeData(Connection conn, JsonNode currentResultNode) {
