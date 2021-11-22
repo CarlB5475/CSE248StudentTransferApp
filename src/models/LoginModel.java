@@ -4,6 +4,10 @@ import java.sql.*;
 
 public class LoginModel extends ConnectionModel {
 	
+	public LoginModel(String url) {
+		super(url);
+	}
+	
 	public LoginModel() {
 		super();
 	}

@@ -24,6 +24,20 @@ public class SQLiteConnection {
 		}
 	}
 	
+	// must have "jdbc:sqlite:data/example.sqlite"
+	public static Connection connector(String url) {
+		try {
+			Class.forName("org.sqlite.JDBC");
+			Connection conn = DriverManager.getConnection(url);
+			initializeTables(conn);
+			initializeCollegeData(conn);
+			return conn;
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	private static void initializeTables(Connection conn) {
 		Statement statement = null;
 		try {

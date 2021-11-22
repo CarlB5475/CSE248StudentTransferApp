@@ -7,6 +7,10 @@ import javafx.scene.control.Alert.AlertType;
 
 public class SignUpModel extends ConnectionModel {
 	
+	public SignUpModel(String url) {
+		super(url);
+	}
+	
 	public SignUpModel() {
 		super();
 	}
