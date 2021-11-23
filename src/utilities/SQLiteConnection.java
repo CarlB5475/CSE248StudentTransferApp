@@ -9,19 +9,10 @@ import java.util.Scanner;
 import com.fasterxml.jackson.databind.*;
 
 public class SQLiteConnection {
+	private static final String MAIN_URL = "jdbc:sqlite:data/transferAppDB.sqlite";
 	
-	public static Connection connector() {
-		try {
-			Class.forName("org.sqlite.JDBC");
-			String url = "jdbc:sqlite:data/transferAppDB.sqlite";
-			Connection conn = DriverManager.getConnection(url);
-			initializeTables(conn);
-			initializeCollegeData(conn);
-			return conn;
-		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
+	public static String getMainUrl() {
+		return MAIN_URL;
 	}
 	
 	// must have "jdbc:sqlite:data/example.sqlite"

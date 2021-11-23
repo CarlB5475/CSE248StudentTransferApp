@@ -7,12 +7,9 @@ public class LoginModel extends ConnectionModel {
 	public LoginModel(String url) {
 		super(url);
 	}
-	
-	public LoginModel() {
-		super();
-	}
 
 	public boolean isLogin(String user, String pass) {
+		user = user.toLowerCase();
 		resetConnection();
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;

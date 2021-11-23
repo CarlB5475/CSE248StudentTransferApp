@@ -6,17 +6,11 @@ import utilities.*;
 
 public abstract class ConnectionModel {
 	private Connection conn = null;
+	private String url;
 	
 	public ConnectionModel(String url) {
+		this.url = url;
 		conn = SQLiteConnection.connector(url);
-		if(conn == null) {
-			System.out.println("Connection not successful");
-			System.exit(1);
-		}
-	}
-	
-	public ConnectionModel() {
-		conn = SQLiteConnection.connector();
 		if(conn == null) {
 			System.out.println("Connection not successful");
 			System.exit(1);
@@ -39,7 +33,7 @@ public abstract class ConnectionModel {
 	public void resetConnection() {
 		try {
 			if(conn.isClosed()) {
-				conn = SQLiteConnection.connector();
+				conn = SQLiteConnection.connector(url);
 				if(conn == null) {
 					System.out.println("Connection not successful");
 					System.exit(1);

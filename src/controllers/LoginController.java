@@ -9,10 +9,11 @@ import javafx.fxml.*;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import models.*;
+import utilities.SQLiteConnection;
 import utilities.ViewChanger;
 
 public class LoginController implements Initializable {
-	private LoginModel loginModel = new LoginModel();
+	private LoginModel loginModel = new LoginModel(SQLiteConnection.getMainUrl());
 	
 	@FXML private TextField userInput;
 	@FXML private PasswordField passwordInput;

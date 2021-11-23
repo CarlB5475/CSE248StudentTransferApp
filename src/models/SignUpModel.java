@@ -11,10 +11,6 @@ public class SignUpModel extends ConnectionModel {
 		super(url);
 	}
 	
-	public SignUpModel() {
-		super();
-	}
-	
 	public void addNewStudent(String firstName, String lastName, String username, String zip, String latitude, String longitude, String password) {
 		username = username.toLowerCase();
 		int favoritesId = getFavoritesId();
@@ -83,38 +79,18 @@ public class SignUpModel extends ConnectionModel {
 		
 		return favoritesId;
 	}
-	
-	public boolean isValidAccount(String firstName, String lastName, String username, String zip, String latitude, String longitude, String password, String reEnteredPassword) {
-		return isValidName(firstName, lastName) && isValidUsername(username) && 
-				isValidZip(zip) && isValidLocation(latitude, longitude) && isValidPassword(password, reEnteredPassword);
-	}
 
-	private boolean isValidName(String firstName, String lastName) {
-		Alert nameAlert = new Alert(AlertType.ERROR);
-		nameAlert.setTitle("Invalid Name Error!");
-		nameAlert.setContentText("Create a valid name!");
-		
-		if(!firstName.matches("[a-zA-Z]+") || !lastName.matches("[a-zA-Z]+")) {
-			nameAlert.setHeaderText("Your name must have letters only!");
-			nameAlert.showAndWait();
-			return false;
-		}
-		
-		return true;
+	public boolean isProperName(String firstName, String lastName) {
+		return firstName.matches("[a-zA-Z]+") && lastName.matches("[a-zA-Z]+");
 	}
 	
-	private boolean isValidUsername(String username) {
-		Alert usernameAlert = new Alert(AlertType.ERROR);
-		usernameAlert.setTitle("Invalid Username Error");
-		usernameAlert.setContentText("Enter a valid username!");
+	public boolean isProperUsername(String username) {
 		username = username.toLowerCase();
-		
-		if(username.contains(" ")) {
-			usernameAlert.setHeaderText("This username contains a space!");
-			usernameAlert.showAndWait();
-			return false;
-		}
-		
+		return !username.contains(" ");
+	}
+	
+	public boolean isUniqueUsername(String username) {
+		username = username.toLowerCase();
 		resetConnection();
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -123,14 +99,11 @@ public class SignUpModel extends ConnectionModel {
 			preparedStatement = getConnection().prepareStatement(query);
 			preparedStatement.setString(1, username);
 			resultSet = preparedStatement.executeQuery();
-			if(resultSet.next()) {
-				usernameAlert.setHeaderText("The username \"" + username + "\" already exists!");
-				usernameAlert.showAndWait();
-				return false;
-			}
+			return !resultSet.next();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.exit(1);
+			return false;
 		} finally {
 			try {
 				preparedStatement.close();
@@ -141,95 +114,63 @@ public class SignUpModel extends ConnectionModel {
 				System.exit(1);
 			}
 		}
-		
-		return true;
 	}
 	
-	private boolean isValidZip(String zip) {
-		Alert zipAlert = new Alert(AlertType.ERROR);
-		zipAlert.setTitle("Invalid Zip Code Alert!");
-		zipAlert.setHeaderText("Your zip code needs to contain numbers only and be 5 numbers long, or be in the format \"01234-5678\"!");
-		zipAlert.setContentText("Enter a valid zip code!");
-		
+
+
+	public boolean isProperZip(String zip) {
 		if(zip.contains("-")) {
 			String[] zipParts = zip.split("-");
-			if(zipParts.length != 2 || zipParts[0].length() != 5 || zipParts[1].length() != 4) {
-				zipAlert.showAndWait();
+			if(zipParts.length != 2 || zipParts[0].length() != 5 || zipParts[1].length() != 4)
 				return false;
-			}
 			
 			for(String part : zipParts) {
-				if(!part.matches("[0-9]+")) {
-					zipAlert.showAndWait();
+				if(!part.matches("[0-9]+"))
 					return false;
-				}
 			}
-		} else if(zip.length() != 5 || !zip.matches("[0-9]+")) {
-			zipAlert.showAndWait();
-			return false;
+			return true;
 		}
 		
-		return true;
+		return zip.length() == 5 && zip.matches("[0-9]+");
 	}
 	
-	private boolean isValidLocation(String latitude, String longitude) {
-		Alert locationAlert = new Alert(AlertType.ERROR);
-		locationAlert.setTitle("Invalid Location Error!");
-		locationAlert.setContentText("Enter a valid latitude and longitude!");
-		
-		try {
-			double latDouble = Double.parseDouble(latitude); // Tests if these string values would throw a NumberFormatException
-			double lonDouble = Double.parseDouble(longitude);
-			
-			// The range for latitude and longitude has to be from -90 to 90 degrees and -180 to 180 degrees respectively
-			boolean latInRange = latDouble >= -90 && latDouble <= 90;
-			boolean lonInRange = lonDouble >= -180 && lonDouble <= 180;
-			if(!latInRange || !lonInRange) {
-				locationAlert.setHeaderText("The latitude needs to be between -90 and 90 degrees and the longitude needs to be between -180 and 180 degrees!");
-				locationAlert.showAndWait();
+	
+	public boolean areDoubleValues(String[] stringArr) {
+		for(String string : stringArr) {
+			try {
+				Double.parseDouble(string);
+			} catch (NumberFormatException e) {
 				return false;
 			}
-		} catch (NumberFormatException e) {
-			locationAlert.setHeaderText("Your latitude and longitude need to be numberical values!");
-			locationAlert.showAndWait();
-			return false;
 		}
-		
 		return true;
 	}
 	
-	private boolean isValidPassword(String password, String reEnteredPassword) {
+	public boolean isProperLocation(String latitude, String longitude) {
+		double latDouble = 0;
+		double lonDouble = 0;
 		try {
-			if(password.length() < 8)
-				throw new Exception();
-			if(password.contains(" "))
-				throw new Exception();
-			if(!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$")) // this checks if a password has a lowercase letter, a capital letter, and a digit
-				throw new Exception();
-			
-		} catch (Exception e) {
-			String contentMessage = "A password should contain at least 8 characters, "
-					+ "contain at least one capital letter, "
-					+ "one lowercase letter, and one digit. "
-					+ "It should not contain any spaces! "
-					+ "Enter a valid password!";
-			
-			Alert invalidPasswordAlert = new Alert(AlertType.ERROR);
-			invalidPasswordAlert.setTitle("Invalid Password Error");
-			invalidPasswordAlert.setHeaderText("This password is invalid!");
-			invalidPasswordAlert.setContentText(contentMessage);
-			invalidPasswordAlert.showAndWait();
+			latDouble = Double.parseDouble(latitude);
+			lonDouble = Double.parseDouble(longitude);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
 			return false;
 		}
 		
-		if(!password.equals(reEnteredPassword)) {
-			Alert passwordMismatchAlert = new Alert(AlertType.ERROR);
-			passwordMismatchAlert.setTitle("Password Mismatch Error");
-			passwordMismatchAlert.setHeaderText("The password and re-entered password are not the same!");
-			passwordMismatchAlert.setContentText("Enter a valid password that you can remember!");
-			passwordMismatchAlert.showAndWait();
-			return false;
-		}
-		return true;
+		// The range for latitude and longitude has to be from -90 to 90 degrees and -180 to 180 degrees respectively
+		boolean latInRange = latDouble >= -90 && latDouble <= 90;
+		boolean lonInRange = lonDouble >= -180 && lonDouble <= 180;
+		return latInRange && lonInRange;
 	}
+	
+	public boolean isProperPassword(String password) {
+		boolean hasProperLength = password.length() >= 8;
+		boolean hasSpaces = password.contains(" ");
+		boolean hasProperChars = password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$");// this checks if a password has a lowercase letter, a capital letter, and a digit
+		return  hasProperLength && !hasSpaces && hasProperChars;
+	}
+	
+	public boolean hasMatchingPasswords(String password, String reEnteredPassword) {
+		return password.equals(reEnteredPassword);
+	}	
 }
