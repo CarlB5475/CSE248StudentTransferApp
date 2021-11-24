@@ -2,17 +2,14 @@ package models;
 
 import java.sql.*;
 
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-
 public class SignUpModel extends ConnectionModel {
 	
 	public SignUpModel(String url) {
 		super(url);
 	}
 	
-	public void addNewStudent(String firstName, String lastName, String username, String zip, String latitude, String longitude, String password) {
-		username = username.toLowerCase();
+	public void addNewStudent(String firstName, String lastName, String userName, String zip, String latitude, String longitude, String password) {
+		userName = userName.toLowerCase();
 		int favoritesId = getFavoritesId();
 		
 		final double PRECISION_NUMBER = 1000000; // The number of zeros determines the number of decimal places for rounding
@@ -30,7 +27,7 @@ public class SignUpModel extends ConnectionModel {
 			preparedStatement = getConnection().prepareStatement(statementString);
 			preparedStatement.setString(1, firstName);
 			preparedStatement.setString(2, lastName);
-			preparedStatement.setString(3, username);
+			preparedStatement.setString(3, userName);
 			preparedStatement.setString(4, password);
 			preparedStatement.setString(5, zip);
 			preparedStatement.setDouble(6, latDouble);
@@ -84,20 +81,20 @@ public class SignUpModel extends ConnectionModel {
 		return firstName.matches("[a-zA-Z]+") && lastName.matches("[a-zA-Z]+");
 	}
 	
-	public boolean isProperUsername(String username) {
-		username = username.toLowerCase();
-		return !username.contains(" ");
+	public boolean isProperUsername(String userName) {
+		userName = userName.toLowerCase();
+		return !userName.contains(" ");
 	}
 	
-	public boolean isUniqueUsername(String username) {
-		username = username.toLowerCase();
+	public boolean isUniqueUsername(String userName) {
+		userName = userName.toLowerCase();
 		resetConnection();
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		String query = "SELECT * FROM students WHERE userName=?";
 		try {
 			preparedStatement = getConnection().prepareStatement(query);
-			preparedStatement.setString(1, username);
+			preparedStatement.setString(1, userName);
 			resultSet = preparedStatement.executeQuery();
 			return !resultSet.next();
 		} catch (SQLException e) {

@@ -47,7 +47,7 @@
                <children>
                   <TextField fx:id="firstNameInput" maxWidth="-Infinity" promptText="First Name" />
                   <TextField fx:id="lastNameInput" maxWidth="-Infinity" promptText="Last Name" GridPane.columnIndex="1" />
-                  <TextField fx:id="usernameInput" maxWidth="-Infinity" promptText="Username" GridPane.rowIndex="1" />
+                  <TextField fx:id="userNameInput" maxWidth="-Infinity" promptText="Username" GridPane.rowIndex="1" />
                   <TextField fx:id="zipInput" maxWidth="-Infinity" promptText="Zip Code" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <PasswordField fx:id="passwordInput" maxWidth="-Infinity" promptText="Password" GridPane.rowIndex="2" />
                   <PasswordField fx:id="reEnterPasswordInput" maxWidth="-Infinity" promptText="Re-enter Password" GridPane.columnIndex="1" GridPane.rowIndex="2" />

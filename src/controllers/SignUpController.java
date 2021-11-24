@@ -16,30 +16,30 @@ import utilities.ViewChanger;
 public class SignUpController implements Initializable {
 	private SignUpModel signUpModel = new SignUpModel(SQLiteConnection.getMainUrl());
 	
-	@FXML private TextField firstNameInput, lastNameInput, usernameInput, zipInput, latInput, lonInput;
+	@FXML private TextField firstNameInput, lastNameInput, userNameInput, zipInput, latInput, lonInput;
 	@FXML private PasswordField passwordInput, reEnterPasswordInput;
 	
 	public void signUp(ActionEvent event) {
 		String firstName = firstNameInput.getText(), lastName = lastNameInput.getText();
-		String username = usernameInput.getText().toLowerCase(), zip = zipInput.getText();
+		String userName = userNameInput.getText().toLowerCase(), zip = zipInput.getText();
 		String latitude = latInput.getText(), longitude = lonInput.getText();
 		String password = passwordInput.getText(), reEnteredPassword = reEnterPasswordInput.getText();
 		
-		boolean hasEmptyInputs = firstName.equals("") || lastName.equals("") || username.equals("") ||
+		boolean hasEmptyInputs = firstName.equals("") || lastName.equals("") || userName.equals("") ||
 				zip.equals("") || latitude.equals("") || longitude.equals("") || password.equals("") || reEnteredPassword.equals("");
 		
 		
-		if(hasEmptyInputs || !isValidAccount(firstName, lastName, username, zip, latitude, longitude, password, reEnteredPassword))
+		if(hasEmptyInputs || !isValidAccount(firstName, lastName, userName, zip, latitude, longitude, password, reEnteredPassword))
 			return;
 		
-		Stream.of(firstNameInput, lastNameInput, usernameInput, zipInput, latInput, lonInput, passwordInput, reEnterPasswordInput)
+		Stream.of(firstNameInput, lastNameInput, userNameInput, zipInput, latInput, lonInput, passwordInput, reEnterPasswordInput)
 		.forEach(textField -> textField.setText(""));
 		
-		signUpModel.addNewStudent(firstName, lastName, username, zip, latitude, longitude, password);
+		signUpModel.addNewStudent(firstName, lastName, userName, zip, latitude, longitude, password);
 		
 		Alert signUpAlert = new Alert(AlertType.INFORMATION);
 		signUpAlert.setTitle("Sign Up Alert!");
-		signUpAlert.setHeaderText("You have successfully created your new account with the username \"" + username + "\"!");
+		signUpAlert.setHeaderText("You have successfully created your new account with the username \"" + userName + "\"!");
 		signUpAlert.setContentText("Go back to the login menu to login!");
 		signUpAlert.showAndWait();		
 	}
@@ -48,7 +48,7 @@ public class SignUpController implements Initializable {
 		ViewChanger.changeToLoginView(event);
 	}
 	
-	private boolean isValidAccount(String firstName, String lastName, String username, String zip, 
+	private boolean isValidAccount(String firstName, String lastName, String userName, String zip, 
 			String latitude, String longitude, String password, String reEnteredPassword) {
 		
 		Alert nameAlert = new Alert(AlertType.ERROR);
@@ -63,13 +63,13 @@ public class SignUpController implements Initializable {
 		Alert usernameAlert = new Alert(AlertType.ERROR);
 		usernameAlert.setTitle("Invalid Username Error");
 		usernameAlert.setContentText("Enter a valid username!");
-		if(!signUpModel.isProperUsername(username)) {
+		if(!signUpModel.isProperUsername(userName)) {
 			usernameAlert.setHeaderText("This username contains a space!");
 			usernameAlert.showAndWait();
 			return false;
 		}
-		if(!signUpModel.isUniqueUsername(username)) {
-			usernameAlert.setHeaderText("The username \"" + username + "\" already exists!");
+		if(!signUpModel.isUniqueUsername(userName)) {
+			usernameAlert.setHeaderText("The username \"" + userName + "\" already exists!");
 			usernameAlert.showAndWait();
 			return false;
 		}

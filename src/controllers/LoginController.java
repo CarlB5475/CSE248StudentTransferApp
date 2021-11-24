@@ -23,8 +23,10 @@ public class LoginController implements Initializable {
 		userInput.setText("");
 		passwordInput.setText("");
 		
-		if(loginModel.isLogin(username, password))
-			ViewChanger.changeToCollegeSearchView(event);
+		if(loginModel.isLogin(username, password)) {
+			ViewableStudent loggedStudent = loginModel.getLoggedStudent(username);
+			ViewChanger.changeToCollegeSearchView(event, loggedStudent);
+		}
 		else {
 			Alert loginAlert = new Alert(AlertType.ERROR);
 			loginAlert.setTitle("Invalid Login Error");

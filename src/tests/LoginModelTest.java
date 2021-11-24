@@ -30,4 +30,11 @@ public class LoginModelTest {
 				() -> assertFalse(loginModel.isLogin(users[1], passwords[1]))
 				);
 	}
+	
+	@Test
+	void testGetLoggedStudent() {
+		ViewableStudent s1 = new ViewableStudent(1, "A", "B", "AB", "Password1", "11720", -45.0, 120.0, 1);
+		ViewableStudent s2 = loginModel.getLoggedStudent("AB");
+		assertEquals(s1, s2);
+	}
 }
