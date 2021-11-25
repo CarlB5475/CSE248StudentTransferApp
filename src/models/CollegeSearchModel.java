@@ -10,7 +10,7 @@ public class CollegeSearchModel extends ConnectionModel {
 		super(url);
 	}
 	
-	public LinkedList<ViewableCollege> searchColleges(String[] predicateStatements, ViewableStudent currentStudent, double radius) {
+	public LinkedList<ViewableCollege> searchColleges(LinkedList<String> predicateStatements, ViewableStudent currentStudent, double radius) {
 		LinkedList<ViewableCollege> collegeList = searchCollegesByQuery(predicateStatements);
 		if(radius == -1) // if radius isn't being used here
 			return collegeList;
@@ -22,7 +22,7 @@ public class CollegeSearchModel extends ConnectionModel {
 		
 	}
 	
-	private LinkedList<ViewableCollege> searchCollegesByQuery(String[] predicateStatements) {
+	private LinkedList<ViewableCollege> searchCollegesByQuery(LinkedList<String> predicateStatements) {
 		LinkedList<ViewableCollege> collegeList = new LinkedList<>();
 		String query = getCompleteQuery(predicateStatements);
 		
@@ -73,18 +73,18 @@ public class CollegeSearchModel extends ConnectionModel {
 	 * I.e "SELECT * FROM colleges WHERE zip LIKE '%11720%' AND attendanceCost<=20000 AND collegeType='Public' AND studentSize<=200000"
 	 * Statements like "zip='11720'" is considered a predicate statement.
 	 */
-	private String getCompleteQuery(String[] predicateStatements) {
+	private String getCompleteQuery(LinkedList<String> predicateStatements) {
 		String query = "SELECT * FROM colleges";
-		if(predicateStatements.length < 1)
+		if(predicateStatements.isEmpty())
 			return query;
 		
 		query += " WHERE ";
-		for(int i = 0; i < predicateStatements.length; i++) {
-			query += predicateStatements[i];
-			if(i < predicateStatements.length - 1) 
-				query += " AND ";
-		}
-		
+                ListIterator<String> predicateStatementIter = predicateStatements.listIterator();
+                while(predicateStatementIter.hasNext()) {
+                        query += predicateStatementIter.next();
+                        if(predicateStatementIter.hasNext())
+                                query += " AND ";
+                }
 		return query;
 	}
 	
