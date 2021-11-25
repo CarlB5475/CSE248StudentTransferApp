@@ -2,11 +2,11 @@ package models;
 
 public class ViewableCollege {
 	private int collegeId; // college id is already unique from SQLite database
-	String name, url;
-	String city, state, collegeZip;
-	double latitude, longitude;
-	int attendanceCost, studentSize;
-	String collegeType;
+	private String name, url;
+	private String city, state, collegeZip;
+	private double latitude, longitude;
+	private int attendanceCost, studentSize;
+	private String collegeType;
 	
 	public ViewableCollege(int collegeId, String name, String url, String city, String state, String collegeZip,
 			double latitude, double longitude, int attendanceCost, int studentSize, String collegeType) {

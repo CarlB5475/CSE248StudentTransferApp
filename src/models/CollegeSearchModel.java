@@ -2,6 +2,7 @@ package models;
 
 import java.sql.*;
 import java.util.LinkedList;
+import java.util.ListIterator;
 
 public class CollegeSearchModel extends ConnectionModel {
 
@@ -9,11 +10,11 @@ public class CollegeSearchModel extends ConnectionModel {
 		super(url);
 	}
 	
-	public LinkedList<ViewableCollege> searchColleges(String[] predicateStatements, ViewableStudent currentStudent, int radius) {
+	public LinkedList<ViewableCollege> searchColleges(String[] predicateStatements, ViewableStudent currentStudent, double radius) {
 		LinkedList<ViewableCollege> collegeList = searchCollegesByQuery(predicateStatements);
 		if(radius == -1) // if radius isn't being used here
 			return collegeList;
-		filterCollegesByRadius(collegeList, currentStudent, radius);
+		collegeList = filterCollegesByRadius(collegeList, currentStudent, radius);
 		return collegeList;
 	}
 	
@@ -23,7 +24,6 @@ public class CollegeSearchModel extends ConnectionModel {
 	
 	private LinkedList<ViewableCollege> searchCollegesByQuery(String[] predicateStatements) {
 		LinkedList<ViewableCollege> collegeList = new LinkedList<>();
-		
 		String query = getCompleteQuery(predicateStatements);
 		
 		resetConnection();
@@ -32,9 +32,8 @@ public class CollegeSearchModel extends ConnectionModel {
 		try {
 			statement = getConnection().createStatement();
 			resultSet = statement.executeQuery(query);
-			while(resultSet.next()) {
-				
-			}
+			while(resultSet.next())
+				collegeList.add(getCollege(resultSet));
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -62,6 +61,7 @@ public class CollegeSearchModel extends ConnectionModel {
 			int attendanceCost = resultSet.getInt("attendanceCost"), studentSize = resultSet.getInt("studentSize");
 			String collegeType = resultSet.getString("collegeType");
 			
+			college = new ViewableCollege(collegeId, name, url, city, state, collegeZip, latitude, longitude, attendanceCost, studentSize, collegeType);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -70,7 +70,7 @@ public class CollegeSearchModel extends ConnectionModel {
 	}
 	
 	/* This fills the query with predicate statements.
-	 * I.e "SELECT * FROM colleges WHERE zip='11720' AND attendanceCost<=20000 AND collegeType='Public' AND studentSize<=200000"
+	 * I.e "SELECT * FROM colleges WHERE zip LIKE '%11720%' AND attendanceCost<=20000 AND collegeType='Public' AND studentSize<=200000"
 	 * Statements like "zip='11720'" is considered a predicate statement.
 	 */
 	private String getCompleteQuery(String[] predicateStatements) {
@@ -88,7 +88,26 @@ public class CollegeSearchModel extends ConnectionModel {
 		return query;
 	}
 	
-	private void filterCollegesByRadius(LinkedList<ViewableCollege> collegeList, ViewableStudent currentStudent, int radius) {
-		
+	private LinkedList<ViewableCollege> filterCollegesByRadius(LinkedList<ViewableCollege> collegeList, ViewableStudent currentStudent, double radius) {
+		LinkedList<ViewableCollege> filteredCollegeList = new LinkedList<>();
+		ListIterator<ViewableCollege> collegeListIter = collegeList.listIterator();
+		while(collegeListIter.hasNext()) {
+			ViewableCollege currentCollege = collegeListIter.next();
+			double distanceFromCollege = calculateDistance(
+					currentStudent.getLatitude(), currentCollege.getLatitude(),
+					currentStudent.getLongitude(), currentCollege.getLongitude());
+			if(distanceFromCollege <= radius) 
+				filteredCollegeList.add(currentCollege);
+		}	
+		return filteredCollegeList;
+	}
+	
+	public double calculateDistance(double studentLatitude, double collegeLatitude, double studentLongitude, double collegeLongitude) {
+		double distance = 0;
+		final int EXPONENT = 2;
+		double totalLatitude = Math.pow((collegeLatitude - studentLatitude), EXPONENT);
+		double totalLongitude = Math.pow((collegeLongitude - studentLongitude), EXPONENT);
+		distance = Math.sqrt(totalLatitude + totalLongitude);
+		return distance;
 	}
 }
