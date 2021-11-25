@@ -31,7 +31,8 @@ public class CollegeSearchModelTest {
 	void testSearchColleges() {
 		double disabledRadius = -1; // radius is not going to be used
 		String zipPredicate = "zip LIKE '%11794%'";
-		String[] predicateStatements = {zipPredicate};
+		LinkedList<String> predicateStatements = new LinkedList<>();
+                predicateStatements.add(zipPredicate);
 		LinkedList<ViewableCollege> collegeList = collegeSearchModel.searchColleges(null, null, disabledRadius);
 	}
 }
