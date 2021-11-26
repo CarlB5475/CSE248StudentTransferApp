@@ -22,6 +22,30 @@ public class CollegeSearchModel extends ConnectionModel {
 		
 	}
 	
+	public String formZipPredicate(String zipCode) {
+		if(zipCode.equals(""))
+			return "";
+		return "collegeZip LIKE '%" + zipCode + "%'";
+	}
+	
+	public String formMaxCostPredicate(int attendanceCost) {
+		if(attendanceCost == -1) // attendanceCost is not being used
+			return "";
+		return "attendanceCost <= " + attendanceCost;
+	}
+	
+	public String formCollegeTypePredicate(String collegeType) {
+		if(collegeType.equals(""))
+			return "";
+		return "collegeType = '" + collegeType + "'";
+	}
+	
+	public String formMaxStudentSizePredicate(int studentSize) {
+		if(studentSize == -1) // studentSize is not being used
+			return "";
+		return "studentSize <= " + studentSize;
+	}
+	
 	private LinkedList<ViewableCollege> searchCollegesByQuery(LinkedList<String> predicateStatements) {
 		LinkedList<ViewableCollege> collegeList = new LinkedList<>();
 		String query = getCompleteQuery(predicateStatements);
@@ -105,9 +129,24 @@ public class CollegeSearchModel extends ConnectionModel {
 	public double calculateDistance(double studentLatitude, double collegeLatitude, double studentLongitude, double collegeLongitude) {
 		double distance = 0;
 		final int EXPONENT = 2;
-		double totalLatitude = Math.pow((collegeLatitude - studentLatitude), EXPONENT);
-		double totalLongitude = Math.pow((collegeLongitude - studentLongitude), EXPONENT);
-		distance = Math.sqrt(totalLatitude + totalLongitude);
+		double studentMilesLatitude = convertLatitudeToMiles(studentLatitude);
+		double collegeMilesLatitude = convertLatitudeToMiles(collegeLatitude);
+		double studentMilesLongitude = convertLongitudeToMiles(studentLongitude);
+		double collegeMilesLongitude = convertLongitudeToMiles(studentLongitude);
+		
+		double totalMilesLatitude = Math.pow((collegeMilesLatitude - studentMilesLatitude), EXPONENT);
+		double totalMilesLongitude = Math.pow((collegeMilesLongitude - studentMilesLongitude), EXPONENT);
+		distance = Math.sqrt(totalMilesLatitude + totalMilesLongitude);
 		return distance;
+	}
+	
+	private double convertLatitudeToMiles(double latitude) {
+		final double MILES_PER_DEGREE = 69;
+		return latitude * MILES_PER_DEGREE;
+	}
+	
+	private double convertLongitudeToMiles(double longitude) {
+		final double MILES_PER_DEGREE = 54.6;
+		return longitude * MILES_PER_DEGREE;
 	}
 }

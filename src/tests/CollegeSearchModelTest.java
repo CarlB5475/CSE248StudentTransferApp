@@ -35,12 +35,12 @@ public class CollegeSearchModelTest {
 	}
 	
 	@Test
-	@Disabled("Successful test")
+//	@Disabled("Successful test")
 	void testCalculateDistance() {
 		double collegeLatitude = 5, collegeLongitude = 5;
 		double studentLatitude = 1, studentLongitude = 1;
 		double distance = collegeSearchModel.calculateDistance(studentLatitude, collegeLatitude, studentLongitude, collegeLongitude);
-		double actual = Math.sqrt(32);
+		double actual = Math.sqrt(123874.56);
 		assertEquals(actual, distance, 0.000001);
 	}
 	
@@ -48,7 +48,7 @@ public class CollegeSearchModelTest {
 	@Disabled("Successful test")
 	void testSearchCollegesByZip() {
 		String zipCode = "11794";
-		String zipPredicate = "collegeZip LIKE '%" + zipCode + "%'";
+		String zipPredicate = collegeSearchModel.formZipPredicate(zipCode);
 		predicateStatements.add(zipPredicate);
 		setCollegeList();
 		if(collegeList.isEmpty())
@@ -64,7 +64,7 @@ public class CollegeSearchModelTest {
 	@Disabled("Successful test")
 	void testSearchCollegesByAttendanceCost() {
 		int attendanceCost = 25500;
-		String maxCostPredicate = "attendanceCost <= " + attendanceCost;
+		String maxCostPredicate = collegeSearchModel.formMaxCostPredicate(attendanceCost);
 		predicateStatements.add(maxCostPredicate);
 		setCollegeList();
 		if(collegeList.isEmpty())
@@ -80,7 +80,7 @@ public class CollegeSearchModelTest {
 	@Disabled("Successful test")
 	void testSearchCollegesByType() {
 		String collegeType = "Public";
-		String collegeTypePredicate = "collegeType = '" + collegeType + "'";
+		String collegeTypePredicate = collegeSearchModel.formCollegeTypePredicate(collegeType);
 		predicateStatements.add(collegeTypePredicate);
 		setCollegeList();
 		if(collegeList.isEmpty())
@@ -96,7 +96,7 @@ public class CollegeSearchModelTest {
 	@Disabled("Successful test")
 	void testSearchCollegesByStudentSize() {
 		int studentSize = 50000;
-		String maxStudentSizePredicate = "studentSize = " + studentSize;
+		String maxStudentSizePredicate = collegeSearchModel.formMaxStudentSizePredicate(studentSize);
 		predicateStatements.add(maxStudentSizePredicate);
 		setCollegeList();
 		if(collegeList.isEmpty())
