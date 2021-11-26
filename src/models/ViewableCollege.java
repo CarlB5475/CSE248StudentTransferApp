@@ -67,6 +67,12 @@ public class ViewableCollege {
 	public String getCollegeType() {
 		return collegeType;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "ViewableCollege [collegeId=" + collegeId + ", name=" + name + ", url=" + url + ", city=" + city
+				+ ", state=" + state + ", collegeZip=" + collegeZip + ", latitude=" + latitude + ", longitude="
+				+ longitude + ", attendanceCost=" + attendanceCost + ", studentSize=" + studentSize + ", collegeType="
+				+ collegeType + "]";
+	}
 }

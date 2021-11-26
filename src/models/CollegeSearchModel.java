@@ -79,12 +79,12 @@ public class CollegeSearchModel extends ConnectionModel {
 			return query;
 		
 		query += " WHERE ";
-                ListIterator<String> predicateStatementIter = predicateStatements.listIterator();
-                while(predicateStatementIter.hasNext()) {
-                        query += predicateStatementIter.next();
-                        if(predicateStatementIter.hasNext())
-                                query += " AND ";
-                }
+		ListIterator<String> predicateStatementIter = predicateStatements.listIterator();
+		while(predicateStatementIter.hasNext()) {
+			query += predicateStatementIter.next();
+			if(predicateStatementIter.hasNext())
+				query += " AND ";
+		}
 		return query;
 	}
 	
