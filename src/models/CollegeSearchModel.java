@@ -28,22 +28,40 @@ public class CollegeSearchModel extends ConnectionModel {
 		return "collegeZip LIKE '%" + zipCode + "%'";
 	}
 	
-	public String formMaxCostPredicate(int attendanceCost) {
-		if(attendanceCost == -1) // attendanceCost is not being used
+	public String formCostPredicate(int minCost, int maxCost) {
+		boolean validRange = true;
+		if(minCost != -1 && maxCost != -1)
+			validRange = minCost <= maxCost;
+
+		if(minCost == -1 && maxCost == -1 || !validRange) // cost is not being used
 			return "";
-		return "attendanceCost <= " + attendanceCost;
+		if(maxCost == -1) // maxCost is not being used
+			return "attendanceCost >= " + minCost;
+		if(minCost == -1) // minCost is not being used
+			return "attendanceCost <= " + maxCost;
+		return "attendanceCost >= " + minCost + " AND attendanceCost <= " + maxCost;
 	}
 	
 	public String formCollegeTypePredicate(String collegeType) {
-		if(collegeType.equals(""))
+		boolean validCollegeType = collegeType.equals("Public") || collegeType.equals("Private Non-Profit") || collegeType.equals("Private For-Profit");
+		if(collegeType.equals("") || !validCollegeType)
 			return "";
 		return "collegeType = '" + collegeType + "'";
 	}
 	
-	public String formMaxStudentSizePredicate(int studentSize) {
-		if(studentSize == -1) // studentSize is not being used
+	public String formStudentSizePredicate(int minSize, int maxSize) {
+		boolean validRange = true;
+		if(minSize != -1 && maxSize != -1)
+			validRange = minSize <= maxSize;
+			
+		if(minSize == -1 && maxSize == -1 || !validRange) // studentSize is not being used
 			return "";
-		return "studentSize <= " + studentSize;
+		if(maxSize == -1) // maxSize is not being used
+			return "studentSize >= " + minSize;
+		if(minSize == -1) // minSize is not being used
+			return "studentSize <= " + maxSize;
+		
+		return "studentSize >= " + minSize + " AND studentSize <= " + maxSize;
 	}
 	
 	private LinkedList<ViewableCollege> searchCollegesByQuery(LinkedList<String> predicateStatements) {
@@ -127,17 +145,10 @@ public class CollegeSearchModel extends ConnectionModel {
 	}
 	
 	public double calculateDistance(double studentLatitude, double collegeLatitude, double studentLongitude, double collegeLongitude) {
-		double distance = 0;
 		final int EXPONENT = 2;
-		double studentMilesLatitude = convertLatitudeToMiles(studentLatitude);
-		double collegeMilesLatitude = convertLatitudeToMiles(collegeLatitude);
-		double studentMilesLongitude = convertLongitudeToMiles(studentLongitude);
-		double collegeMilesLongitude = convertLongitudeToMiles(studentLongitude);
-		
-		double totalMilesLatitude = Math.pow((collegeMilesLatitude - studentMilesLatitude), EXPONENT);
-		double totalMilesLongitude = Math.pow((collegeMilesLongitude - studentMilesLongitude), EXPONENT);
-		distance = Math.sqrt(totalMilesLatitude + totalMilesLongitude);
-		return distance;
+		double differenceMilesLatitude = convertLatitudeToMiles(collegeLatitude - studentLatitude);
+		double differenceMilesLongitude = convertLongitudeToMiles(collegeLongitude - studentLongitude);
+		return Math.sqrt(Math.pow(differenceMilesLatitude, EXPONENT) + Math.pow(differenceMilesLongitude, EXPONENT));
 	}
 	
 	private double convertLatitudeToMiles(double latitude) {
