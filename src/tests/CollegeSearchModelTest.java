@@ -37,6 +37,38 @@ public class CollegeSearchModelTest {
 	
 	@Test
 	@Disabled("Successful test")
+	void testAddFavorites() {
+		String zipCode = "11794";
+		String zipPredicate = collegeSearchModel.formZipPredicate(zipCode);
+		predicateStatements.add(zipPredicate);
+		setCollegeList(predicateStatements);
+		
+		boolean result = collegeSearchModel.addFavoriteToStudent(collegeList.getFirst(), student);
+		assertTrue(result);
+	}
+	
+	@Test
+	@Disabled("Successful test")
+	void testAddFavoritesMultiple() {
+		String collegeType = "Public";
+		String collegeTypePredicate = collegeSearchModel.formCollegeTypePredicate(collegeType);
+		predicateStatements.add(collegeTypePredicate);
+		setCollegeList(predicateStatements);
+		
+		final int MAX_FAVORITES = 10;
+		ListIterator<ViewableCollege> collegeListIter = collegeList.listIterator();
+		for(int i = 1; i <= MAX_FAVORITES; i++)
+			collegeSearchModel.addFavoriteToStudent(collegeListIter.next(), student);
+		
+		
+		boolean result = collegeSearchModel.addFavoriteToStudent(collegeListIter.next(), student);
+		if(!result)
+			System.out.println("There's no room to put this college as a favorite for this student.");
+		assertFalse(result);
+	}
+	
+	@Test
+	@Disabled("Successful test")
 	void testCalculateDistance() {
 		double collegeLatitude = 5, collegeLongitude = 5;
 		double studentLatitude = 1, studentLongitude = 1;
@@ -183,10 +215,11 @@ public class CollegeSearchModelTest {
 	void testSearchCollegesMixed() {
 		int radius = 150;
 		String collegeType = "Public";
-		int attendanceCost = 20000;
+		int minCost = 1;
+		int maxCost = 20000;
 		String collegeTypePredicate = collegeSearchModel.formCollegeTypePredicate(collegeType);
-//		String maxCostPredicate = collegeSearchModel.formMaxCostPredicate(attendanceCost);
-		predicateStatements.addAll(Stream.of(collegeTypePredicate).toList());
+		String costPredicate = collegeSearchModel.formCostPredicate(minCost, maxCost);
+		predicateStatements.addAll(Stream.of(collegeTypePredicate, costPredicate).toList());
 		setCollegeList(predicateStatements, radius);
 		if(collegeList.isEmpty()) {
 			assertTrue(collegeList.isEmpty());
@@ -198,8 +231,10 @@ public class CollegeSearchModelTest {
 			System.out.println(college);
 			double currentDistance = collegeSearchModel.calculateDistance(
 					student.getLatitude(), college.getLatitude(), student.getLongitude(), college.getLongitude());
+			double currentCost = college.getAttendanceCost();
 			assertTrue(currentDistance <= radius);
 			assertTrue(college.getCollegeType().equals(collegeType));
+			assertTrue(currentCost >= minCost && currentCost <= maxCost);
 		});
 	}
 	

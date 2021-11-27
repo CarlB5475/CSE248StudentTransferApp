@@ -18,8 +18,51 @@ public class CollegeSearchModel extends ConnectionModel {
 		return collegeList;
 	}
 	
-	public void addFavoriteToStudent(ViewableCollege favoriteCollege, ViewableStudent student) {
+	// returns true if the favorite college has been added; return false if there's no room for another favorite college
+	public boolean addFavoriteToStudent(ViewableCollege favoriteCollege, ViewableStudent student) {
+		String user = student.getUserName();
+		final int MAX_FAVORITES = 10;
 		
+		resetConnection();
+		Statement statement = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		// gets both the students table and favorites table for the given student
+		String query = "SELECT * FROM students INNER JOIN favorites ON favorites.favoritesId = students.favoritesId WHERE userName=?";
+		try {
+			preparedStatement = getConnection().prepareStatement(query);
+			preparedStatement.setString(1, user);
+			resultSet = preparedStatement.executeQuery();
+			resultSet.next();
+			
+			statement = getConnection().createStatement();
+			for(int i = 1; i <= MAX_FAVORITES; i++) {
+				String collegeIdLabel = "collegeId" + i;
+				int currentCollegeId = resultSet.getInt(collegeIdLabel);
+				if(currentCollegeId != 0) // if there is already a college id in there
+					continue;
+				
+				String updateStatement = "UPDATE favorites SET " + collegeIdLabel + " = " + favoriteCollege.getCollegeId() + 
+						" WHERE favoritesId = " + student.getFavoritesId();
+				statement.executeUpdate(updateStatement);
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.exit(1);
+		} finally {
+			try {
+				statement.close();
+				preparedStatement.close();
+				resultSet.close();
+				getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+		}
+		
+		return false;
 	}
 	
 	public String formZipPredicate(String zipCode) {
@@ -112,8 +155,8 @@ public class CollegeSearchModel extends ConnectionModel {
 	}
 	
 	/* This fills the query with predicate statements.
-	 * I.e "SELECT * FROM colleges WHERE zip LIKE '%11720%' AND attendanceCost<=20000 AND collegeType='Public' AND studentSize<=200000"
-	 * Statements like "zip='11720'" is considered a predicate statement.
+	 * I.e "SELECT * FROM colleges WHERE collegeZip LIKE '%11720%' AND attendanceCost<=20000 AND collegeType='Public' AND studentSize<=200000"
+	 * Statements like "collegeZip='11720'" is considered a predicate statement.
 	 */
 	private String getCompleteQuery(LinkedList<String> predicateStatements) {
 		String query = "SELECT * FROM colleges";
