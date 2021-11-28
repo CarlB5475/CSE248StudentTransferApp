@@ -1,6 +1,270 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CollegeSearchController" />
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="789.0" tabClosingPolicy="UNAVAILABLE" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="controllers.CollegeSearchController">
+  <tabs>
+    <Tab text="College Search Menu">
+         <content>
+            <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="522.0" prefWidth="789.0">
+               <top>
+                  <VBox alignment="TOP_CENTER" prefHeight="140.0" prefWidth="789.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <HBox prefHeight="25.0" prefWidth="600.0">
+                           <children>
+                              <MenuBar>
+                                 <menus>
+                                    <Menu fx:id="optionsMenu" mnemonicParsing="false" text="Options">
+                                       <items>
+                                          <MenuItem mnemonicParsing="false" onAction="#viewStudentProfile" text="View Profile" />
+                                          <MenuItem mnemonicParsing="false" onAction="#logOut" text="Log Out" />
+                                       </items>
+                                    </Menu>
+                                 </menus>
+                              </MenuBar>
+                           </children>
+                        </HBox>
+                        <VBox alignment="TOP_CENTER" prefHeight="123.0" prefWidth="789.0" spacing="10.0">
+                           <children>
+                              <Label text="College Search Menu" underline="true">
+                                 <font>
+                                    <Font name="Times New Roman" size="21.0" />
+                                 </font>
+                              </Label>
+                              <Label prefHeight="82.0" prefWidth="257.0" text="Search for the perfect college you want to transfer to here for your bachelor's Computer Science degree!" wrapText="true">
+                                 <font>
+                                    <Font name="Times New Roman" size="15.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+               </top>
+               <center>
+                  <VBox alignment="TOP_CENTER" prefHeight="341.0" prefWidth="789.0" spacing="10.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Label text="Search Options" underline="true">
+                           <font>
+                              <Font name="Times New Roman" size="21.0" />
+                           </font>
+                        </Label>
+                        <HBox alignment="CENTER_LEFT" prefHeight="298.0" prefWidth="789.0" spacing="30.0">
+                           <children>
+                              <VBox prefHeight="287.0" prefWidth="187.0" spacing="20.0">
+                                 <children>
+                                    <Label text="Search by:">
+                                       <font>
+                                          <Font name="Times New Roman" size="17.0" />
+                                       </font>
+                                    </Label>
+                                    <CheckBox fx:id="zipCodeCheckBox" mnemonicParsing="false" text="Your Current Zip Code" wrapText="true">
+                                       <font>
+                                          <Font name="Times New Roman" size="15.0" />
+                                       </font>
+                                    </CheckBox>
+                                    <CheckBox fx:id="distanceCheckBox" mnemonicParsing="false" text="Distance">
+                                       <font>
+                                          <Font name="Times New Roman" size="15.0" />
+                                       </font>
+                                    </CheckBox>
+                                    <CheckBox fx:id="attendanceCostCheckBox" mnemonicParsing="false" text="Attendance Cost">
+                                       <font>
+                                          <Font name="Times New Roman" size="15.0" />
+                                       </font>
+                                    </CheckBox>
+                                    <CheckBox fx:id="collegeTypeCheckBox" mnemonicParsing="false" text="College Type">
+                                       <font>
+                                          <Font name="Times New Roman" size="15.0" />
+                                       </font>
+                                    </CheckBox>
+                                    <CheckBox fx:id="studentSizeCheckBox" mnemonicParsing="false" text="Student Size">
+                                       <font>
+                                          <Font name="Times New Roman" size="15.0" />
+                                       </font>
+                                    </CheckBox>
+                                 </children>
+                                 <padding>
+                                    <Insets left="10.0" top="10.0" />
+                                 </padding>
+                              </VBox>
+                              <GridPane prefHeight="298.0" prefWidth="522.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints maxHeight="144.0" minHeight="10.0" prefHeight="130.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="184.0" minHeight="10.0" prefHeight="168.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="189.0" spacing="20.0">
+                                       <children>
+                                          <Label text="Enter Radius" underline="true">
+                                             <font>
+                                                <Font name="Times New Roman" size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <TextField fx:id="radiusInput" maxWidth="-Infinity" promptText="Radius in miles" />
+                                       </children>
+                                       <padding>
+                                          <Insets top="10.0" />
+                                       </padding>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="1">
+                                       <children>
+                                          <Label prefHeight="60.0" prefWidth="189.0" text="Enter Range of Attendance Cost (Set either to -1 to disable min or max)" textAlignment="CENTER" underline="true" wrapText="true">
+                                             <font>
+                                                <Font name="Times New Roman" size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <GridPane>
+                                             <columnConstraints>
+                                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <TextField fx:id="minCostInput" maxWidth="-Infinity" prefHeight="25.0" prefWidth="103.0" promptText="Min" />
+                                                <TextField fx:id="maxCostInput" maxWidth="-Infinity" prefWidth="103.0" promptText="Max" GridPane.columnIndex="1" />
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                       <padding>
+                                          <Insets top="5.0" />
+                                       </padding>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <children>
+                                          <Label prefHeight="60.0" prefWidth="189.0" text="Enter Range of Student Size (Set either to -1 to disable min or max)" textAlignment="CENTER" underline="true" wrapText="true">
+                                             <font>
+                                                <Font name="Times New Roman" size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <GridPane>
+                                             <columnConstraints>
+                                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <TextField fx:id="minStudentSizeInput" maxWidth="-Infinity" prefHeight="25.0" prefWidth="103.0" promptText="Min" />
+                                                <TextField fx:id="maxStudentSizeInput" maxWidth="-Infinity" prefWidth="103.0" promptText="Max" GridPane.columnIndex="1" />
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                       <padding>
+                                          <Insets top="5.0" />
+                                       </padding>
+                                    </VBox>
+                                    <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.rowIndex="1">
+                                       <children>
+                                          <Label prefHeight="64.0" prefWidth="134.0" text="Select College Type:" underline="true" wrapText="true">
+                                             <font>
+                                                <Font name="Times New Roman" size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
+                                             <children>
+                                                <RadioButton fx:id="publicRadioButton" mnemonicParsing="false" text="Public">
+                                                   <font>
+                                                      <Font name="Times New Roman" size="14.0" />
+                                                   </font>
+                                                </RadioButton>
+                                                <RadioButton fx:id="privateNonProfitRadioButton" mnemonicParsing="false" text="Private Non-Profit" wrapText="true">
+                                                   <font>
+                                                      <Font name="Times New Roman" size="14.0" />
+                                                   </font>
+                                                </RadioButton>
+                                                <RadioButton fx:id="privateForProfitRadioButton" mnemonicParsing="false" text="Private For-Profit" wrapText="true">
+                                                   <font>
+                                                      <Font name="Times New Roman" size="14.0" />
+                                                   </font>
+                                                </RadioButton>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                    </HBox>
+                                 </children>
+                              </GridPane>
+                           </children>
+                           <padding>
+                              <Insets left="30.0" />
+                           </padding>
+                        </HBox>
+                     </children>
+                     <padding>
+                        <Insets top="10.0" />
+                     </padding>
+                  </VBox>
+               </center>
+               <bottom>
+                  <HBox alignment="TOP_CENTER" prefHeight="76.0" prefWidth="789.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#searchColleges" text="Search Colleges" />
+                     </children>
+                     <padding>
+                        <Insets top="20.0" />
+                     </padding>
+                  </HBox>
+               </bottom>
+            </BorderPane>
+         </content>
+    </Tab>
+    <Tab text="College Search Results">
+         <content>
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="30.0">
+               <children>
+                  <TableView fx:id="collegeTable" prefHeight="427.0" prefWidth="789.0">
+                     <columns>
+                        <TableColumn fx:id="collegeIdColumn" prefWidth="97.0" text="College Id" />
+                        <TableColumn fx:id="collegeNameColumn" prefWidth="158.0" text="College Name" />
+                        <TableColumn fx:id="collegeUrlColumn" prefWidth="399.0" text="College URL" />
+                        <TableColumn fx:id="collegeTypeColumn" prefWidth="134.0" text="College Type" />
+                     </columns>
+                  </TableView>
+                  <GridPane maxWidth="-Infinity" prefHeight="36.0" prefWidth="344.0">
+                     <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Button fx:id="viewSelectedCollegeButton" mnemonicParsing="false" onAction="#viewSelectedCollege" text="View Selected College" />
+                        <Button fx:id="addFavoriteCollegeButton" mnemonicParsing="false" onAction="#addFavoriteCollege" text="Add College to Favorites" GridPane.columnIndex="1" />
+                     </children>
+                  </GridPane>
+               </children>
+            </VBox>
+         </content>
+    </Tab>
+  </tabs>
+</TabPane>
