@@ -7,7 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import javafx.stage.Stage;
 import models.ViewableStudent;
 
@@ -23,15 +23,15 @@ public class ViewChanger {
 		window.show();
 	}
 	
-//	public static void changeToLoginView(Menu menu) throws IOException {
-//		FXMLLoader loader = new FXMLLoader(ViewChanger.class.getResource("/views/login-view.fxml"));
-//		Scene loginScene = new Scene(loader.load());
-//		setToMainStyle(loginScene);
-//		
-//		Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-//		window.setScene(loginScene);
-//		window.show();
-//	}
+	public static void changeToLoginView(MenuBar menuBar) throws IOException {
+		FXMLLoader loader = new FXMLLoader(ViewChanger.class.getResource("/views/login-view.fxml"));
+		Scene loginScene = new Scene(loader.load());
+		setToMainStyle(loginScene);
+		
+		Stage window = (Stage)menuBar.getScene().getWindow();
+		window.setScene(loginScene);
+		window.show();
+	}
 	
 	public static void changeToSignUpView(ActionEvent event) throws IOException {
 		FXMLLoader loader = new FXMLLoader(ViewChanger.class.getResource("/views/signUp-view.fxml"));

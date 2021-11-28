@@ -18,6 +18,7 @@ public class SignUpModelTest {
 	}
 	
 	@Test
+	@Disabled("Successful test")
 	void testIsProperName() {
 		assertTrue(signUpModel.isProperName("C", "D"));
 		assertFalse(signUpModel.isProperName("12343", "D"));
@@ -25,18 +26,21 @@ public class SignUpModelTest {
 	}
 	
 	@Test
+	@Disabled("Successful test")
 	void testIsProperUsername() {
 		assertTrue(signUpModel.isProperUsername("CD"));
 		assertFalse(signUpModel.isProperUsername("C D"));
 	}
 	
 	@Test
+	@Disabled("Successful test")
 	void testIsUniqueUsername() {
 		assertTrue(signUpModel.isUniqueUsername("CD"));
 		assertFalse(signUpModel.isUniqueUsername("AB"));
 	}
 	
 	@Test
+	@Disabled("Successful test")
 	void testIsProperZip() {
 		String[] zips = {"11720", "11720-1234", "123", "123456", "12345-12-123", "abc", "abc-def"};
 		assertAll("zips", 
@@ -51,6 +55,7 @@ public class SignUpModelTest {
 	}
 	
 	@Test
+	@Disabled("Successful test")
 	void testAreDoubleValues() {
 		String[] strArr1 = {"123", "12.8"};
 		String[] strArr2 = {"abc", "123", "def"};
@@ -59,6 +64,7 @@ public class SignUpModelTest {
 	}
 	
 	@Test
+	@Disabled("Successful test")
 	void testIsProperLocation() {
 		String[] latitudes = {"85.0", "-85.0", "95", "-95"};
 		String[] longitudes = {"123", "-123", "190", "-190"};
@@ -71,6 +77,7 @@ public class SignUpModelTest {
 	}
 	
 	@Test
+	@Disabled("Successful test")
 	void testIsProperPassword() {
 		String[] passwords = {"Password1", "pass", "Password", "password1", "PASSWORD1"};
 		assertAll("passwords", 
@@ -83,6 +90,7 @@ public class SignUpModelTest {
 	}
 	
 	@Test
+	@Disabled("Successful test")
 	void testHasMatchingPasswords() {
 		assertTrue(signUpModel.hasMatchingPasswords("Password1", "Password1"));
 		assertFalse(signUpModel.hasMatchingPasswords("Pass", "Password1"));

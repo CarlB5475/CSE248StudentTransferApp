@@ -21,7 +21,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="789.0" tabClosingPolicy="UNAVAILABLE" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="controllers.CollegeSearchController">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="789.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CollegeSearchController">
   <tabs>
     <Tab text="College Search Menu">
          <content>
@@ -31,9 +31,9 @@
                      <children>
                         <HBox prefHeight="25.0" prefWidth="600.0">
                            <children>
-                              <MenuBar>
+                              <MenuBar fx:id="menuBar">
                                  <menus>
-                                    <Menu fx:id="optionsMenu" mnemonicParsing="false" text="Options">
+                                    <Menu mnemonicParsing="false" text="Options">
                                        <items>
                                           <MenuItem mnemonicParsing="false" onAction="#viewStudentProfile" text="View Profile" />
                                           <MenuItem mnemonicParsing="false" onAction="#logOut" text="Log Out" />
@@ -77,27 +77,27 @@
                                           <Font name="Times New Roman" size="17.0" />
                                        </font>
                                     </Label>
-                                    <CheckBox fx:id="zipCodeCheckBox" mnemonicParsing="false" text="Your Current Zip Code" wrapText="true">
+                                    <CheckBox fx:id="zipCodeCheckBox" mnemonicParsing="false" onAction="#selectSearchOptions" text="Your Current Zip Code" wrapText="true">
                                        <font>
                                           <Font name="Times New Roman" size="15.0" />
                                        </font>
                                     </CheckBox>
-                                    <CheckBox fx:id="distanceCheckBox" mnemonicParsing="false" text="Distance">
+                                    <CheckBox fx:id="distanceCheckBox" mnemonicParsing="false" onAction="#selectSearchOptions" text="Distance">
                                        <font>
                                           <Font name="Times New Roman" size="15.0" />
                                        </font>
                                     </CheckBox>
-                                    <CheckBox fx:id="attendanceCostCheckBox" mnemonicParsing="false" text="Attendance Cost">
+                                    <CheckBox fx:id="attendanceCostCheckBox" mnemonicParsing="false" onAction="#selectSearchOptions" text="Attendance Cost">
                                        <font>
                                           <Font name="Times New Roman" size="15.0" />
                                        </font>
                                     </CheckBox>
-                                    <CheckBox fx:id="collegeTypeCheckBox" mnemonicParsing="false" text="College Type">
+                                    <CheckBox fx:id="collegeTypeCheckBox" mnemonicParsing="false" onAction="#selectSearchOptions" text="College Type">
                                        <font>
                                           <Font name="Times New Roman" size="15.0" />
                                        </font>
                                     </CheckBox>
-                                    <CheckBox fx:id="studentSizeCheckBox" mnemonicParsing="false" text="Student Size">
+                                    <CheckBox fx:id="studentSizeCheckBox" mnemonicParsing="false" onAction="#selectSearchOptions" text="Student Size">
                                        <font>
                                           <Font name="Times New Roman" size="15.0" />
                                        </font>

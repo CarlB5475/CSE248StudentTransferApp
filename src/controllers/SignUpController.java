@@ -87,12 +87,12 @@ public class SignUpController implements Initializable {
 		locationAlert.setTitle("Invalid Location Error!");
 		locationAlert.setContentText("Enter a valid latitude and longitude!");
 		String[] locationStrings = {latitude, longitude};
-		if(signUpModel.areDoubleValues(locationStrings)) {
+		if(!signUpModel.areDoubleValues(locationStrings)) {
 			locationAlert.setHeaderText("Your latitude and longitude need to be numberical values!");
 			locationAlert.showAndWait();
 			return false;
 		}
-		if(signUpModel.isProperLocation(latitude, longitude)) {
+		if(!signUpModel.isProperLocation(latitude, longitude)) {
 			locationAlert.setHeaderText("The latitude needs to be between -90 and 90 degrees and the longitude needs to be between -180 and 180 degrees!");
 			locationAlert.showAndWait();
 			return false;
@@ -116,7 +116,7 @@ public class SignUpController implements Initializable {
 		passwordMismatchAlert.setTitle("Password Mismatch Error");
 		passwordMismatchAlert.setHeaderText("The password and re-entered password are not the same!");
 		passwordMismatchAlert.setContentText("Enter a valid password that you can remember!");
-		if(signUpModel.hasMatchingPasswords(password, reEnteredPassword)) {
+		if(!signUpModel.hasMatchingPasswords(password, reEnteredPassword)) {
 			passwordMismatchAlert.showAndWait();
 			return false;
 		}
