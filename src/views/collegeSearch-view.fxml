@@ -139,13 +139,19 @@
                                                    <columnConstraints>
                                                       <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                       <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                    </columnConstraints>
                                                    <rowConstraints>
                                                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                    </rowConstraints>
                                                    <children>
-                                                      <TextField fx:id="minCostInput" maxWidth="-Infinity" prefHeight="25.0" prefWidth="157.0" promptText="Min (-1 to Disable)" />
-                                                      <TextField fx:id="maxCostInput" maxWidth="-Infinity" prefWidth="157.0" promptText="Max (-1 to Disable)" GridPane.columnIndex="1" />
+                                                      <TextField fx:id="minCostInput" maxWidth="-Infinity" prefWidth="100.0" promptText="Min" />
+                                                      <TextField fx:id="maxCostInput" maxWidth="-Infinity" prefWidth="100.0" promptText="Max" GridPane.columnIndex="1" />
+                                                      <CheckBox fx:id="disableMaxCostCheckBox" mnemonicParsing="false" onAction="#disableMax" text="Disable Max" GridPane.columnIndex="2">
+                                                         <font>
+                                                            <Font name="Times New Roman" size="15.0" />
+                                                         </font>
+                                                      </CheckBox>
                                                    </children>
                                                 </GridPane>
                                              </children>
@@ -203,13 +209,19 @@
                                                    <columnConstraints>
                                                       <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                       <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                    </columnConstraints>
                                                    <rowConstraints>
                                                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                    </rowConstraints>
                                                    <children>
-                                                      <TextField fx:id="minStudentSizeInput" maxWidth="-Infinity" prefHeight="25.0" prefWidth="157.0" promptText="Min (-1 to Disable)" />
-                                                      <TextField fx:id="maxStudentSizeInput" maxWidth="-Infinity" prefWidth="157.0" promptText="Max (-1 to Disable)" GridPane.columnIndex="1" />
+                                                      <TextField fx:id="minStudentSizeInput" maxWidth="-Infinity" prefWidth="100.0" promptText="Min" />
+                                                      <TextField fx:id="maxStudentSizeInput" maxWidth="-Infinity" prefWidth="100.0" promptText="Max" GridPane.columnIndex="1" />
+                                                      <CheckBox fx:id="disableMaxStudentSizeCheckBox" mnemonicParsing="false" onAction="#disableMax" text="Disable Max" GridPane.columnIndex="2">
+                                                         <font>
+                                                            <Font name="Times New Roman" size="15.0" />
+                                                         </font>
+                                                      </CheckBox>
                                                    </children>
                                                 </GridPane>
                                              </children>

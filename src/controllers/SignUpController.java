@@ -87,7 +87,7 @@ public class SignUpController implements Initializable {
 		locationAlert.setTitle("Invalid Location Error!");
 		locationAlert.setContentText("Enter a valid latitude and longitude!");
 		String[] locationStrings = {latitude, longitude};
-		if(!signUpModel.areDoubleValues(locationStrings)) {
+		if(!signUpModel.areValidDoubles(locationStrings)) {
 			locationAlert.setHeaderText("Your latitude and longitude need to be numberical values!");
 			locationAlert.showAndWait();
 			return false;

@@ -99,11 +99,11 @@ public class CollegeSearchModelTest {
 	@Test
 	@Disabled("Successful test")
 	void testSearchCollegesByAttendanceCost() {
-		int minCost = 20000;
-		int maxCost = -1;
+		// Given: min and max cost are valid integers and has valid range
+		int minCost = 1;
+		int maxCost = 30000;
 		String maxCostPredicate = collegeSearchModel.formCostPredicate(minCost, maxCost);
-		if(!maxCostPredicate.equals(""))
-			predicateStatements.add(maxCostPredicate);
+		predicateStatements.add(maxCostPredicate);
 		setCollegeList(predicateStatements);
 		if(collegeList.isEmpty()) {
 			assertTrue(collegeList.isEmpty());
@@ -114,22 +114,11 @@ public class CollegeSearchModelTest {
 		for(ViewableCollege college : collegeList) {
 			System.out.println(college.getName() + "; Attendance Cost = " + college.getAttendanceCost());
 			int currentCost = college.getAttendanceCost();
-			if(minCost == -1 && maxCost == -1) {
-				assertTrue(minCost == -1 && maxCost == -1);
-				System.out.println("Cost predicate is not used");
-				break;
-			}
 			
-			if(minCost == -1) {
-				assertTrue(currentCost <= maxCost);
-			} else if(maxCost == -1) {
+			if(maxCost == -1) {
 				assertTrue(currentCost >= minCost);
-			} else if(!maxCostPredicate.equals("")) {
-				assertTrue(currentCost >= minCost && currentCost <= maxCost);
 			} else {
-				assertTrue(minCost >= maxCost);
-				System.out.println("The minimum is greather than the maximum");
-				break;
+				assertTrue(currentCost >= minCost && currentCost <= maxCost);
 			}
 		}
 	}
@@ -156,8 +145,9 @@ public class CollegeSearchModelTest {
 	@Test
 	@Disabled("Successful test")
 	void testSearchCollegesByStudentSize() {
-		int minStudentSize = 1;
-		int maxStudentSize = 20000;
+		// Given: min and max are valid integers and has valid range
+		int minStudentSize = 10000;
+		int maxStudentSize = -1;
 		String studentSizePredicate = collegeSearchModel.formStudentSizePredicate(minStudentSize, maxStudentSize);
 		if(!studentSizePredicate.equals(""))
 			predicateStatements.add(studentSizePredicate);
@@ -171,22 +161,11 @@ public class CollegeSearchModelTest {
 		for(ViewableCollege college : collegeList) {
 			System.out.println(college.getName() + "; Student Size = " + college.getStudentSize());
 			int currentStudentSize = college.getStudentSize();
-			if(minStudentSize == -1 && maxStudentSize == -1) {
-				assertTrue(minStudentSize == -1 && maxStudentSize == -1);
-				System.out.println("Student size predicate is not used");
-				break;
-			}
 			
-			if(minStudentSize == -1) {
-				assertTrue(currentStudentSize <= maxStudentSize);
-			} else if(maxStudentSize == -1) {
+			if(maxStudentSize == -1) {
 				assertTrue(currentStudentSize >= minStudentSize);
-			} else if(!studentSizePredicate.equals("")) {
-				assertTrue(currentStudentSize >= minStudentSize && currentStudentSize <= maxStudentSize);
 			} else {
-				assertTrue(minStudentSize >= maxStudentSize);
-				System.out.println("The minimum is greather than the maximum");
-				break;
+				assertTrue(currentStudentSize >= minStudentSize && currentStudentSize <= maxStudentSize);
 			}
 		}
 	}
@@ -239,8 +218,46 @@ public class CollegeSearchModelTest {
 	}
 	
 	@Test
-	void testVaidMethods() {
-		String[] strMinValues = {"100", "ab"};
+	@Disabled("Successful test")
+	void testSearchCollegesDefault() {
+		setCollegeList(predicateStatements);
+		assertTrue(!collegeList.isEmpty());
+		collegeList.forEach(college -> System.out.println(college.getCollegeId() + ": " + college.getName()));
+	}
+	
+	@Test
+	@Disabled("Successful test")
+	void testValidIntegerAndDouble() {
+		String[] strIntegerValues = {"100", "ab", "213.5"};
+		String[] strDoubleValues = {"123.1", "56", "cd"};
+		
+		assertAll("integer values", 
+				() -> assertTrue(collegeSearchModel.isValidInteger(strIntegerValues[0])),
+				() -> assertFalse(collegeSearchModel.isValidInteger(strIntegerValues[1])),
+				() -> assertFalse(collegeSearchModel.isValidInteger(strIntegerValues[2]))
+				);
+		
+		assertAll("double values", 
+				() -> assertTrue(collegeSearchModel.isValidDouble(strDoubleValues[0])),
+				() -> assertTrue(collegeSearchModel.isValidDouble(strDoubleValues[1])),
+				() -> assertFalse(collegeSearchModel.isValidDouble(strDoubleValues[2]))
+				);
+	}
+	
+	@Test
+	@Disabled("Successful test")
+	void testValidRange() {
+		int[] minValues = {0, 500, -5};
+		int[] maxValues = {500, 0, -1, -5};
+		
+		assertAll("ranges", 
+				() -> assertTrue(collegeSearchModel.isValidRange(minValues[0], maxValues[0])),
+				() -> assertFalse(collegeSearchModel.isValidRange(minValues[1], maxValues[1])),
+				() -> assertTrue(collegeSearchModel.isValidRange(minValues[1], maxValues[2])),
+				() -> assertFalse(collegeSearchModel.isValidRange(minValues[2], maxValues[0])),
+				() -> assertFalse(collegeSearchModel.isValidRange(minValues[0], maxValues[3])),
+				() -> assertFalse(collegeSearchModel.isValidRange(minValues[2], maxValues[3]))
+				);
 	}
 	
 	private void setCollegeList(LinkedList<String> predicateStatements) {

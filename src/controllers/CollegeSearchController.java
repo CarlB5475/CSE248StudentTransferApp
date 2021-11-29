@@ -26,6 +26,8 @@ public class CollegeSearchController implements Initializable {
 	private boolean zipCodeDisabled, distanceDisabled, attendanceCostDisabled, collegeTypeDisabled, studentSizeDisabled;
 	
 	@FXML private TextField radiusInput, minCostInput, maxCostInput, minStudentSizeInput, maxStudentSizeInput;
+	@FXML private CheckBox disableMaxCostCheckBox, disableMaxStudentSizeCheckBox;
+	private boolean maxCostDisabled, maxStudentSizeDisabled;
 	@FXML private RadioButton publicRadioButton, privateNonProfitRadioButton, privateForProfitRadioButton;
 	private ToggleGroup collegeTypeToggleGroup;
 	
@@ -62,8 +64,24 @@ public class CollegeSearchController implements Initializable {
 		toggleDisable(studentSizeTab, studentSizeDisabled);
 	}
 	
-	public void searchColleges(ActionEvent event) {
+	public void disableMax(ActionEvent event) {
+		maxCostDisabled = disableMaxCostCheckBox.isSelected();
+		maxStudentSizeDisabled = disableMaxStudentSizeCheckBox.isSelected();
 		
+		maxCostInput.setDisable(maxCostDisabled);
+		maxStudentSizeInput.setDisable(maxStudentSizeDisabled);
+		
+		maxCostInput.setText("");
+		maxStudentSizeInput.setText("");
+	}
+	
+	public void searchColleges(ActionEvent event) {
+		LinkedList<String> predicateStatements = new LinkedList<>();
+		int radius = -1; // radius is not used when = -1
+		
+		
+		
+		collegeSearchModel.searchColleges(predicateStatements, loggedStudent, radius);
 	}
 	
 	public void viewSelectedCollege(ActionEvent event) {

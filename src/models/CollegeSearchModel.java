@@ -71,18 +71,10 @@ public class CollegeSearchModel extends ConnectionModel {
 		return "collegeZip LIKE '%" + zipCode + "%'";
 	}
 	
+	// Given: costs are valid integers
 	public String formCostPredicate(int minCost, int maxCost) {
-		boolean validRange = true;
-		boolean hasNegative = minCost < -1 || maxCost < -1;
-		if(minCost != -1 && maxCost != -1)
-			validRange = minCost <= maxCost;
-
-		if(minCost == -1 && maxCost == -1 || !validRange || hasNegative) // cost is not being used
-			return "";
 		if(maxCost == -1) // maxCost is not being used
 			return "attendanceCost >= " + minCost;
-		if(minCost == -1) // minCost is not being used
-			return "attendanceCost <= " + maxCost;
 		return "attendanceCost >= " + minCost + " AND attendanceCost <= " + maxCost;
 	}
 	
@@ -93,37 +85,18 @@ public class CollegeSearchModel extends ConnectionModel {
 		return "collegeType = '" + collegeType + "'";
 	}
 	
+	// Given: sizes are valid integers
 	public String formStudentSizePredicate(int minSize, int maxSize) {
-		boolean validRange = true;
-		boolean hasNegative = minSize < -1 || maxSize < -1;
-		if(minSize != -1 && maxSize != -1)
-			validRange = minSize <= maxSize;
-			
-		if(minSize == -1 && maxSize == -1 || !validRange || hasNegative) // studentSize is not being used
-			return "";
 		if(maxSize == -1) // maxSize is not being used
 			return "studentSize >= " + minSize;
-		if(minSize == -1) // minSize is not being used
-			return "studentSize <= " + maxSize;
-		
 		return "studentSize >= " + minSize + " AND studentSize <= " + maxSize;
 	}
 	
-	public boolean isValidMinInteger(String strInteger) {
+	public boolean isValidInteger(String strInteger) {
 		int integer = 0;
 		try {
 			 integer = Integer.parseInt(strInteger);
-			return integer >= 0;
-		} catch (NumberFormatException e) {
-			return false;
-		}
-	}
-	
-	public boolean isValidMaxInteger(String strInteger) {
-		int integer = 0;
-		try {
-			 integer = Integer.parseInt(strInteger);
-			return integer >= -1; // -1 is allowed for disabling max
+			return integer >= 0; 
 		} catch (NumberFormatException e) {
 			return false;
 		}
@@ -211,6 +184,7 @@ public class CollegeSearchModel extends ConnectionModel {
 		return query;
 	}
 	
+	// Given: radius is a valid double
 	private LinkedList<ViewableCollege> filterCollegesByRadius(LinkedList<ViewableCollege> collegeList, ViewableStudent currentStudent, double radius) {
 		LinkedList<ViewableCollege> filteredCollegeList = new LinkedList<>();
 		ListIterator<ViewableCollege> collegeListIter = collegeList.listIterator();
