@@ -73,10 +73,11 @@ public class CollegeSearchModel extends ConnectionModel {
 	
 	public String formCostPredicate(int minCost, int maxCost) {
 		boolean validRange = true;
+		boolean hasNegative = minCost < -1 || maxCost < -1;
 		if(minCost != -1 && maxCost != -1)
 			validRange = minCost <= maxCost;
 
-		if(minCost == -1 && maxCost == -1 || !validRange) // cost is not being used
+		if(minCost == -1 && maxCost == -1 || !validRange || hasNegative) // cost is not being used
 			return "";
 		if(maxCost == -1) // maxCost is not being used
 			return "attendanceCost >= " + minCost;
@@ -94,10 +95,11 @@ public class CollegeSearchModel extends ConnectionModel {
 	
 	public String formStudentSizePredicate(int minSize, int maxSize) {
 		boolean validRange = true;
+		boolean hasNegative = minSize < -1 || maxSize < -1;
 		if(minSize != -1 && maxSize != -1)
 			validRange = minSize <= maxSize;
 			
-		if(minSize == -1 && maxSize == -1 || !validRange) // studentSize is not being used
+		if(minSize == -1 && maxSize == -1 || !validRange || hasNegative) // studentSize is not being used
 			return "";
 		if(maxSize == -1) // maxSize is not being used
 			return "studentSize >= " + minSize;
@@ -105,6 +107,42 @@ public class CollegeSearchModel extends ConnectionModel {
 			return "studentSize <= " + maxSize;
 		
 		return "studentSize >= " + minSize + " AND studentSize <= " + maxSize;
+	}
+	
+	public boolean isValidMinInteger(String strInteger) {
+		int integer = 0;
+		try {
+			 integer = Integer.parseInt(strInteger);
+			return integer >= 0;
+		} catch (NumberFormatException e) {
+			return false;
+		}
+	}
+	
+	public boolean isValidMaxInteger(String strInteger) {
+		int integer = 0;
+		try {
+			 integer = Integer.parseInt(strInteger);
+			return integer >= -1; // -1 is allowed for disabling max
+		} catch (NumberFormatException e) {
+			return false;
+		}
+	}
+	
+	public boolean isValidRange(int min, int max) {
+		if(max != -1) // if max is not disabled
+			return min <= max && (min >= 0 && max >= 0);
+		return min >= 0;
+	}
+	
+	public boolean isValidDouble(String strDouble) {
+		double doubleValue = 0;
+		try {
+			doubleValue = Double.parseDouble(strDouble);
+			return doubleValue >= 0;
+		} catch (NumberFormatException e) {
+			return false;
+		}
 	}
 	
 	private LinkedList<ViewableCollege> searchCollegesByQuery(LinkedList<String> predicateStatements) {

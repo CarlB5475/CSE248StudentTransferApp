@@ -9,7 +9,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.*;
 import javafx.fxml.*;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import models.*;
@@ -23,6 +22,7 @@ public class CollegeSearchController implements Initializable {
 	@FXML private MenuBar menuBar;
 	
 	@FXML private CheckBox zipCodeCheckBox, distanceCheckBox, attendanceCostCheckBox, collegeTypeCheckBox, studentSizeCheckBox;
+	@FXML private Tab radiusTab, attendanceCostTab, collegeTypeTab, studentSizeTab;
 	private boolean zipCodeDisabled, distanceDisabled, attendanceCostDisabled, collegeTypeDisabled, studentSizeDisabled;
 	
 	@FXML private TextField radiusInput, minCostInput, maxCostInput, minStudentSizeInput, maxStudentSizeInput;
@@ -56,10 +56,10 @@ public class CollegeSearchController implements Initializable {
 		studentSizeDisabled = !studentSizeCheckBox.isSelected();
 		
 		// sets the criteria to be enabled or disabled if any of the check boxes are selected
-		toggleDisable(radiusInput, distanceDisabled);
-		Stream.of(minCostInput, maxCostInput).forEach(costInput -> toggleDisable(costInput, attendanceCostDisabled));
-		Stream.of(publicRadioButton, privateNonProfitRadioButton, privateForProfitRadioButton).forEach(collegeTypeButton -> toggleDisable(collegeTypeButton, collegeTypeDisabled));
-		Stream.of(minStudentSizeInput, maxStudentSizeInput).forEach(sizeInput -> toggleDisable(sizeInput, studentSizeDisabled));
+		toggleDisable(radiusTab, distanceDisabled);
+		toggleDisable(attendanceCostTab, attendanceCostDisabled);
+		toggleDisable(collegeTypeTab, collegeTypeDisabled);
+		toggleDisable(studentSizeTab, studentSizeDisabled);
 	}
 	
 	public void searchColleges(ActionEvent event) {
@@ -74,8 +74,8 @@ public class CollegeSearchController implements Initializable {
 		
 	}
 	
-	private void toggleDisable(Node node, boolean isDisabled) {
-		node.setDisable(isDisabled);
+	private void toggleDisable(Tab tab, boolean isDisabled) {
+		tab.setDisable(isDisabled);
 	}
 	
 	private ObservableList<ViewableCollege> getViewableColleges(LinkedList<String> predicateStatements, int radius) {
@@ -101,9 +101,7 @@ public class CollegeSearchController implements Initializable {
 		this.privateNonProfitRadioButton.setToggleGroup(collegeTypeToggleGroup);
 		this.privateForProfitRadioButton.setToggleGroup(collegeTypeToggleGroup);
 		
-		Stream.of(radiusInput, minCostInput, maxCostInput, minStudentSizeInput, maxStudentSizeInput,
-				publicRadioButton, privateNonProfitRadioButton, privateForProfitRadioButton).forEach(node -> node.setDisable(true));
-		
+		Stream.of(radiusTab, attendanceCostTab, collegeTypeTab, studentSizeTab).forEach(tab -> tab.setDisable(true));
 		// sets every option to be disabled for now
 		Stream.of(zipCodeDisabled, distanceDisabled, attendanceCostDisabled, collegeTypeDisabled, studentSizeDisabled).forEach(isDisabled -> isDisabled = true);
 	}

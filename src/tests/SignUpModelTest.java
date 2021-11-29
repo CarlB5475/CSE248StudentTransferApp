@@ -59,8 +59,8 @@ public class SignUpModelTest {
 	void testAreDoubleValues() {
 		String[] strArr1 = {"123", "12.8"};
 		String[] strArr2 = {"abc", "123", "def"};
-		assertTrue(signUpModel.areDoubleValues(strArr1));
-		assertFalse(signUpModel.areDoubleValues(strArr2));
+		assertTrue(signUpModel.areValidDoubles(strArr1));
+		assertFalse(signUpModel.areValidDoubles(strArr2));
 	}
 	
 	@Test

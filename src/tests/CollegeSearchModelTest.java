@@ -238,6 +238,11 @@ public class CollegeSearchModelTest {
 		});
 	}
 	
+	@Test
+	void testVaidMethods() {
+		String[] strMinValues = {"100", "ab"};
+	}
+	
 	private void setCollegeList(LinkedList<String> predicateStatements) {
 		collegeList = collegeSearchModel.searchColleges(predicateStatements, student, DISABLED_RADIUS);
 	}

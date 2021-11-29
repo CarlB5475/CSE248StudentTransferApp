@@ -132,7 +132,7 @@ public class SignUpModel extends ConnectionModel {
 	}
 	
 	
-	public boolean areDoubleValues(String[] stringArr) {
+	public boolean areValidDoubles(String[] stringArr) {
 		for(String string : stringArr) {
 			try {
 				Double.parseDouble(string);
