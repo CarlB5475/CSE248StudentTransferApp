@@ -228,19 +228,21 @@ public class CollegeSearchModelTest {
 	@Test
 	@Disabled("Successful test")
 	void testValidIntegerAndDouble() {
-		String[] strIntegerValues = {"100", "ab", "213.5"};
-		String[] strDoubleValues = {"123.1", "56", "cd"};
+		String[] strIntegerValues = {"100", "ab", "213.5", "-12"};
+		String[] strDoubleValues = {"123.1", "56", "cd", "-12.5"};
 		
 		assertAll("integer values", 
 				() -> assertTrue(collegeSearchModel.isValidInteger(strIntegerValues[0])),
 				() -> assertFalse(collegeSearchModel.isValidInteger(strIntegerValues[1])),
-				() -> assertFalse(collegeSearchModel.isValidInteger(strIntegerValues[2]))
+				() -> assertFalse(collegeSearchModel.isValidInteger(strIntegerValues[2])),
+				() -> assertFalse(collegeSearchModel.isValidInteger(strIntegerValues[3]))
 				);
 		
 		assertAll("double values", 
 				() -> assertTrue(collegeSearchModel.isValidDouble(strDoubleValues[0])),
 				() -> assertTrue(collegeSearchModel.isValidDouble(strDoubleValues[1])),
-				() -> assertFalse(collegeSearchModel.isValidDouble(strDoubleValues[2]))
+				() -> assertFalse(collegeSearchModel.isValidDouble(strDoubleValues[2])),
+				() -> assertFalse(collegeSearchModel.isValidDouble(strDoubleValues[3]))
 				);
 	}
 	
