@@ -60,7 +60,6 @@ public class CollegeSearchModelTest {
 		for(int i = 1; i <= MAX_FAVORITES; i++)
 			collegeSearchModel.addFavoriteToStudent(collegeListIter.next(), student);
 		
-		
 		boolean result = collegeSearchModel.addFavoriteToStudent(collegeListIter.next(), student);
 		if(!result)
 			System.out.println("There's no room to put this college as a favorite for this student.");

@@ -12,6 +12,7 @@ import javafx.fxml.*;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import models.*;
 import utilities.*;
 
@@ -106,12 +107,25 @@ public class CollegeSearchController implements Initializable {
 		searchAlert.showAndWait();
 	}
 	
-	public void viewSelectedCollege(ActionEvent event) {
-		
+	public void viewSelectedCollege(ActionEvent event) throws IOException {
+		ViewableCollege selectedCollege = collegeTable.getSelectionModel().getSelectedItem();
+		ViewChanger.viewCollegeProfile(selectedCollege);
 	}
 	
 	public void addFavoriteCollege(ActionEvent event) {
-		
+		ViewableCollege selectedCollege = collegeTable.getSelectionModel().getSelectedItem();
+		if(!collegeSearchModel.addFavoriteToStudent(selectedCollege, loggedStudent)) {
+			Alert fullFavoritesAlert = new Alert(AlertType.ERROR);
+			fullFavoritesAlert.setTitle("Full Favorites Alert");
+			fullFavoritesAlert.setHeaderText("You have the maximum amount of favorites you can have!");
+			fullFavoritesAlert.setContentText("Delete some favorite colleges to make room for more!");
+			fullFavoritesAlert.showAndWait();
+		}
+	}
+	
+	public void toggleDisableTableOptions(MouseEvent event) {
+		viewSelectedCollegeButton.setDisable(collegeTable.getSelectionModel().getSelectedItem() == null);
+		addFavoriteCollegeButton.setDisable(collegeTable.getSelectionModel().getSelectedItem() == null);
 	}
 	
 	// return true if adding the predicate statements is successful, else return false
@@ -251,5 +265,6 @@ public class CollegeSearchController implements Initializable {
 		this.privateForProfitRadioButton.setToggleGroup(collegeTypeToggleGroup);
 		
 		Stream.of(radiusTab, attendanceCostTab, collegeTypeTab, studentSizeTab).forEach(tab -> tab.setDisable(true));
+		Stream.of(viewSelectedCollegeButton, addFavoriteCollegeButton).forEach(button -> button.setDisable(true));
 	}
 }

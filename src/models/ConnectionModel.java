@@ -7,6 +7,7 @@ import utilities.*;
 public abstract class ConnectionModel {
 	private Connection conn = null;
 	private String url;
+	private final int MAX_FAVORITES = 10;
 	
 	public ConnectionModel(String url) {
 		this.url = url;
@@ -19,6 +20,10 @@ public abstract class ConnectionModel {
 	
 	public Connection getConnection() {
 		return conn;
+	}
+	
+	public int getMaxFavorites() {
+		return MAX_FAVORITES;
 	}
 	
 	public boolean isConnectedDb() {

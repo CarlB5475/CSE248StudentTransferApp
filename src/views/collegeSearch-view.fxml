@@ -261,7 +261,7 @@
          <content>
             <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="30.0">
                <children>
-                  <TableView fx:id="collegeTable" prefHeight="427.0" prefWidth="789.0">
+                  <TableView fx:id="collegeTable" onMouseClicked="#toggleDisableTableOptions" prefHeight="427.0" prefWidth="789.0">
                      <columns>
                         <TableColumn fx:id="collegeIdColumn" prefWidth="97.0" text="College Id" />
                         <TableColumn fx:id="collegeNameColumn" prefWidth="158.0" text="College Name" />

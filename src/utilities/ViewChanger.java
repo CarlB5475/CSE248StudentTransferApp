@@ -5,11 +5,11 @@ import java.io.IOException;
 import controllers.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Scene;
+import javafx.scene.*;
 import javafx.scene.control.MenuBar;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
-import models.ViewableStudent;
+import models.*;
 
 public class ViewChanger {
 	
@@ -54,6 +54,21 @@ public class ViewChanger {
 		Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
 		window.setScene(collegeSearchScene);
 		window.show();
+	}
+	
+	public static void viewCollegeProfile(ViewableCollege selectedCollege) throws IOException {
+		FXMLLoader loader = new FXMLLoader(ViewChanger.class.getResource("/views/collegeProfile-view.fxml"));
+		Scene viewCollegeScene = new Scene(loader.load());
+		setToMainStyle(viewCollegeScene);
+		
+		CollegeProfileController controller = loader.getController();
+		controller.setCollege(selectedCollege);
+		
+		Stage popupWindow = new Stage();
+		popupWindow.setScene(viewCollegeScene);
+		popupWindow.setTitle(selectedCollege.getName() + " Information");
+		popupWindow.initModality(Modality.APPLICATION_MODAL);
+		popupWindow.showAndWait();
 	}
 	
 	private static void setToMainStyle(Scene scene) {

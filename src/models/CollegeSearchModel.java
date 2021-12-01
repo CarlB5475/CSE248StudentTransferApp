@@ -21,7 +21,6 @@ public class CollegeSearchModel extends ConnectionModel {
 	// returns true if the favorite college has been added; return false if there's no room for another favorite college
 	public boolean addFavoriteToStudent(ViewableCollege favoriteCollege, ViewableStudent student) {
 		String user = student.getUserName();
-		final int MAX_FAVORITES = 10;
 		
 		resetConnection();
 		Statement statement = null;
@@ -36,7 +35,7 @@ public class CollegeSearchModel extends ConnectionModel {
 			resultSet.next();
 			
 			statement = getConnection().createStatement();
-			for(int i = 1; i <= MAX_FAVORITES; i++) {
+			for(int i = 1; i <= getMaxFavorites(); i++) {
 				String collegeIdLabel = "collegeId" + i;
 				int currentCollegeId = resultSet.getInt(collegeIdLabel);
 				if(currentCollegeId != 0) // if there is already a college id in there
