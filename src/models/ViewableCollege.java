@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Objects;
+
 public class ViewableCollege {
 	private int collegeId; // college id is already unique from SQLite database
 	private String name, url;
@@ -66,6 +68,30 @@ public class ViewableCollege {
 
 	public String getCollegeType() {
 		return collegeType;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(attendanceCost, city, collegeId, collegeType, collegeZip, latitude, longitude, name, state,
+				studentSize, url);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ViewableCollege other = (ViewableCollege) obj;
+		return attendanceCost == other.attendanceCost && Objects.equals(city, other.city)
+				&& collegeId == other.collegeId && Objects.equals(collegeType, other.collegeType)
+				&& Objects.equals(collegeZip, other.collegeZip)
+				&& Double.doubleToLongBits(latitude) == Double.doubleToLongBits(other.latitude)
+				&& Double.doubleToLongBits(longitude) == Double.doubleToLongBits(other.longitude)
+				&& Objects.equals(name, other.name) && Objects.equals(state, other.state)
+				&& studentSize == other.studentSize && Objects.equals(url, other.url);
 	}
 
 	@Override
