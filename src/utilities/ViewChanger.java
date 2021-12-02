@@ -71,6 +71,19 @@ public class ViewChanger {
 		popupWindow.showAndWait();
 	}
 	
+	public static void changeToStudentProfileView(MenuBar menuBar, ViewableStudent loggedStudent) throws IOException {
+		FXMLLoader loader = new FXMLLoader(ViewChanger.class.getResource("/views/studentProfile-view.fxml"));
+		Scene studentProfileScene = new Scene(loader.load());
+		setToMainStyle(studentProfileScene);
+		
+		StudentProfileController controller = loader.getController();
+		controller.setStudent(loggedStudent);
+		
+		Stage window = (Stage)menuBar.getScene().getWindow();
+		window.setScene(studentProfileScene);
+		window.show();
+	}
+	
 	private static void setToMainStyle(Scene scene) {
 		scene.getStylesheets().add(ViewChanger.class.getResource("/views/main-style.css").toExternalForm());
 	}

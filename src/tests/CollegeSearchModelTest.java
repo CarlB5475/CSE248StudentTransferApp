@@ -68,6 +68,20 @@ public class CollegeSearchModelTest {
 	
 	@Test
 	@Disabled("Successful test")
+	void testIsInFavorites() {
+		String zipCode = "11794";
+		String zipPredicate = collegeSearchModel.formZipPredicate(zipCode);
+		predicateStatements.add(zipPredicate);
+		setCollegeList(predicateStatements);
+		
+		ViewableCollege currentCollege = collegeList.getFirst();
+		assertFalse(collegeSearchModel.isInFavorites(currentCollege, student));
+		collegeSearchModel.addFavoriteToStudent(currentCollege, student);
+		assertTrue(collegeSearchModel.isInFavorites(currentCollege, student));
+	}
+	
+	@Test
+	@Disabled("Successful test")
 	void testCalculateDistance() {
 		double collegeLatitude = 5, collegeLongitude = 5;
 		double studentLatitude = 1, studentLongitude = 1;

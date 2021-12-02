@@ -43,8 +43,8 @@ public class CollegeSearchController implements Initializable {
 		loggedStudent = student;
 	}
 	
-	public void viewStudentProfile(ActionEvent event) {
-		
+	public void viewStudentProfile(ActionEvent event) throws IOException {
+		ViewChanger.changeToStudentProfileView(menuBar, loggedStudent);
 	}
 	
 	public void logOut(ActionEvent event) throws IOException {
@@ -100,6 +100,8 @@ public class CollegeSearchController implements Initializable {
 		viewableColleges = getViewableColleges(predicateStatements, radius);
 		collegeTable.setItems(viewableColleges);
 		
+		Stream.of(viewSelectedCollegeButton, addFavoriteCollegeButton).forEach(button -> button.setDisable(true));
+		
 		Alert searchAlert = new Alert(AlertType.INFORMATION);
 		searchAlert.setTitle("Search Alert");
 		searchAlert.setHeaderText("The search has been successful!");
@@ -120,12 +122,23 @@ public class CollegeSearchController implements Initializable {
 			fullFavoritesAlert.setHeaderText("You have the maximum amount of favorites you can have!");
 			fullFavoritesAlert.setContentText("Delete some favorite colleges to make room for more!");
 			fullFavoritesAlert.showAndWait();
+			return;
 		}
+		
+		addFavoriteCollegeButton.setDisable(true);
+		
+		Alert favoritesAlert = new Alert(AlertType.INFORMATION);
+		favoritesAlert.setTitle("Favorites Alert");
+		favoritesAlert.setHeaderText("The college \"" + selectedCollege.getName() + "\n has been added to favorites!");
+		favoritesAlert.setContentText("View your favorite colleges in your profile!");
+		favoritesAlert.showAndWait();
 	}
 	
 	public void toggleDisableTableOptions(MouseEvent event) {
-		viewSelectedCollegeButton.setDisable(collegeTable.getSelectionModel().getSelectedItem() == null);
-		addFavoriteCollegeButton.setDisable(collegeTable.getSelectionModel().getSelectedItem() == null);
+		ViewableCollege selectedCollege = collegeTable.getSelectionModel().getSelectedItem();
+		boolean isSelectedCollege = selectedCollege != null;
+		viewSelectedCollegeButton.setDisable(!isSelectedCollege);
+		addFavoriteCollegeButton.setDisable(!isSelectedCollege || collegeSearchModel.isInFavorites(selectedCollege, loggedStudent));
 	}
 	
 	// return true if adding the predicate statements is successful, else return false

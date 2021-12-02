@@ -64,6 +64,43 @@ public class CollegeSearchModel extends ConnectionModel {
 		return false;
 	}
 	
+	public boolean isInFavorites(ViewableCollege selectedCollege, ViewableStudent student) {
+		String user = student.getUserName();
+		
+		resetConnection();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		// gets both the students table and favorites table for the given student
+		String query = "SELECT * FROM students INNER JOIN favorites ON favorites.favoritesId = students.favoritesId WHERE userName=?";
+		try {
+			preparedStatement = getConnection().prepareStatement(query);
+			preparedStatement.setString(1, user);
+			resultSet = preparedStatement.executeQuery();
+			resultSet.next();
+			
+			for(int i = 1; i <= getMaxFavorites(); i++) {
+				String collegeIdLabel = "collegeId" + i;
+				int currentCollegeId = resultSet.getInt(collegeIdLabel);
+				if(currentCollegeId == selectedCollege.getCollegeId()) // if there the selected college is in favorites
+					return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.exit(1);
+		} finally {
+			try {
+				preparedStatement.close();
+				resultSet.close();
+				getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+		}
+		
+		return false;
+	}
+	
 	public String formZipPredicate(String zipCode) {
 		if(zipCode.equals(""))
 			return "";
