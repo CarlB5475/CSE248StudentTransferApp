@@ -56,6 +56,19 @@ public class ViewChanger {
 		window.show();
 	}
 	
+	public static void changeToCollegeSearchView(MenuBar menuBar, ViewableStudent loggedStudent) throws IOException {
+		FXMLLoader loader = new FXMLLoader(ViewChanger.class.getResource("/views/collegeSearch-view.fxml"));
+		Scene collegeSearchScene = new Scene(loader.load());
+		setToMainStyle(collegeSearchScene);
+		
+		CollegeSearchController controller = loader.getController();
+		controller.setStudent(loggedStudent);
+		
+		Stage window = (Stage)menuBar.getScene().getWindow();
+		window.setScene(collegeSearchScene);
+		window.show();
+	}
+	
 	public static void viewCollegeProfile(ViewableCollege selectedCollege) throws IOException {
 		FXMLLoader loader = new FXMLLoader(ViewChanger.class.getResource("/views/collegeProfile-view.fxml"));
 		Scene viewCollegeScene = new Scene(loader.load());

@@ -48,6 +48,53 @@ public class StudentProfileModel extends ConnectionModel {
 		return favoritesList;
 	}
 	
+	// returns true if the deletion was successful, else return false
+	public boolean deleteFavorite(ViewableStudent student, ViewableCollege favoriteCollege) {
+		String user = student.getUserName();
+		
+		resetConnection();
+		Statement statement = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		String favoritesQuery = "SELECT * FROM students INNER JOIN favorites ON favorites.favoritesId = students.favoritesId WHERE userName=?";
+		try {
+			preparedStatement = getConnection().prepareStatement(favoritesQuery);
+			preparedStatement.setString(1, user);
+			resultSet = preparedStatement.executeQuery();
+			resultSet.next();
+			
+			statement = getConnection().createStatement();
+			for(int i = 1; i <= getMaxFavorites(); i++) {
+				String collegeIdLabel = "collegeId" + i;
+				int currentCollegeId = resultSet.getInt(collegeIdLabel);
+				boolean isMatchingCollege = currentCollegeId == favoriteCollege.getCollegeId();
+				if(!hasCollege(resultSet, collegeIdLabel) || !isMatchingCollege)
+					continue;
+				
+				String updateStatement = "UPDATE favorites SET " + collegeIdLabel + " = null" + 
+						" WHERE favoritesId = " + student.getFavoritesId();
+				statement.executeUpdate(updateStatement);
+				return true;
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.exit(1);
+		} finally {
+			try {
+				statement.close();
+				preparedStatement.close();
+				resultSet.close();
+				getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+		}
+		
+		return false;
+	}
+	
 	private boolean hasCollege(ResultSet resultSet, String collegeIdLabel) {
 		int currentCollegeId = 0;
 		try {
