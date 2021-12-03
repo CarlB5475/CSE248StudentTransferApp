@@ -30,11 +30,12 @@ public class StudentProfileModelTest {
 		signUpModel.addNewStudent("A", "B", user, "11720", "41.0", "-75.5", "Password1");
 		student = loginModel.getLoggedStudent(user);
 		collegeList = collegeSearchModel.searchColleges(predicateStatements, student, DISABLED_RADIUS);
-		setFavorites();
 	}
 	
 	@Test
+	@Disabled("Successful test")
 	void testGetFavorites() {
+		setAllFavorites();
 		LinkedList<ViewableCollege> favoriteColleges = studentProfileModel.getFavorites(student);
 		ListIterator<ViewableCollege> favoriteCollegesIter = favoriteColleges.listIterator();
 		ListIterator<ViewableCollege> collegeListIter = collegeList.listIterator();
@@ -44,11 +45,33 @@ public class StudentProfileModelTest {
 			ViewableCollege currentCollege = collegeListIter.next();
 			assertTrue(currentFavorite.equals(currentCollege));
 		}
+		assertTrue(favoriteColleges.size() == 10);
 	}
 	
-	private static void setFavorites() {
+	@Test
+	void testGetFavoritesNotFull() {
+		setPartialFavorites();
+		LinkedList<ViewableCollege> favoriteColleges = studentProfileModel.getFavorites(student);
+		ListIterator<ViewableCollege> favoriteCollegesIter = favoriteColleges.listIterator();
+		ListIterator<ViewableCollege> collegeListIter = collegeList.listIterator();
+		
+		while(favoriteCollegesIter.hasNext()) {
+			ViewableCollege currentFavorite = favoriteCollegesIter.next();
+			ViewableCollege currentCollege = collegeListIter.next();
+			assertTrue(currentFavorite.equals(currentCollege));
+		}
+		assertTrue(favoriteColleges.size() == 5);
+	}
+	
+	private static void setAllFavorites() {
 		ListIterator<ViewableCollege> collegeListIter = collegeList.listIterator();
 		for(int i = 0; i < collegeSearchModel.getMaxFavorites(); i++)
+			collegeSearchModel.addFavoriteToStudent(collegeListIter.next(), student);
+	}
+	
+	private static void setPartialFavorites() {
+		ListIterator<ViewableCollege> collegeListIter = collegeList.listIterator();
+		for(int i = 0; i < collegeSearchModel.getMaxFavorites() / 2; i++)
 			collegeSearchModel.addFavoriteToStudent(collegeListIter.next(), student);
 	}
 }

@@ -165,7 +165,7 @@ public class CollegeSearchModel extends ConnectionModel {
 			statement = getConnection().createStatement();
 			resultSet = statement.executeQuery(query);
 			while(resultSet.next())
-				collegeList.add(getCollege(resultSet));
+				collegeList.add(getViewableCollege(resultSet));
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -183,7 +183,7 @@ public class CollegeSearchModel extends ConnectionModel {
 		return collegeList;
 	}
 	
-	private ViewableCollege getCollege(ResultSet resultSet) {
+	private ViewableCollege getViewableCollege(ResultSet resultSet) {
 		ViewableCollege college = null;
 		try {
 			int collegeId = resultSet.getInt("collegeId");

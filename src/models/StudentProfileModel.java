@@ -11,18 +11,25 @@ public class StudentProfileModel extends ConnectionModel {
 	
 	public LinkedList<ViewableCollege> getFavorites(ViewableStudent student) {
 		LinkedList<ViewableCollege> favoritesList = new LinkedList<>();
-		int favoritesId = student.getFavoritesId();
+		String user = student.getUserName();
 		
 		resetConnection();
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
-		String query = "SELECT * FROM favorites WHERE favoritesId=?";
+		String favoritesQuery = "SELECT * FROM students INNER JOIN favorites ON favorites.favoritesId = students.favoritesId WHERE userName=?";
 		try {
-			preparedStatement = getConnection().prepareStatement(query);
-			preparedStatement.setInt(1, favoritesId);
+			preparedStatement = getConnection().prepareStatement(favoritesQuery);
+			preparedStatement.setString(1, user);
 			resultSet = preparedStatement.executeQuery();
 			resultSet.next();
-			
+			for(int i = 1; i <= getMaxFavorites(); i++) {
+				String collegeIdLabel = "collegeId" + i;
+				if(!hasCollege(resultSet, collegeIdLabel))
+					continue;
+				int currentCollegeId = resultSet.getInt(collegeIdLabel);
+				ViewableCollege currentCollege = getViewableCollege(currentCollegeId);
+				favoritesList.add(currentCollege);
+			}
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -40,11 +47,47 @@ public class StudentProfileModel extends ConnectionModel {
 		
 		return favoritesList;
 	}
+	
+	private boolean hasCollege(ResultSet resultSet, String collegeIdLabel) {
+		int currentCollegeId = 0;
+		try {
+			currentCollegeId = resultSet.getInt(collegeIdLabel);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		return currentCollegeId != 0;
+	}
 
-	private ViewableCollege getCollege(ResultSet resultSet) {
+	private ViewableCollege getViewableCollege(int collegeId) {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		String collegeQuery = "SELECT * FROM colleges WHERE collegeId=?";
+		try {
+			preparedStatement = getConnection().prepareStatement(collegeQuery);
+			preparedStatement.setInt(1, collegeId);
+			resultSet = preparedStatement.executeQuery();
+			resultSet.next();
+			
+			return formViewableCollege(collegeId, resultSet);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.exit(1);
+			return null;
+		} finally {
+			try {
+				preparedStatement.close();
+				resultSet.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+		}
+	}
+	
+	private ViewableCollege formViewableCollege(int collegeId, ResultSet resultSet) {
 		ViewableCollege college = null;
 		try {
-			int collegeId = resultSet.getInt("collegeId");
 			String name = resultSet.getString("name"), url = resultSet.getString("url");
 			String city = resultSet.getString("city"), state = resultSet.getString("state"), collegeZip = resultSet.getString("collegeZip");
 			double latitude = resultSet.getDouble("latitude"), longitude = resultSet.getDouble("longitude");
