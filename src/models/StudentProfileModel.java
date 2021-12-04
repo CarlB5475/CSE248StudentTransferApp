@@ -9,6 +9,14 @@ public class StudentProfileModel extends ConnectionModel {
 		super(url);
 	}
 	
+	public String getStudentInfo(ViewableStudent student) {
+		return "Student Id: " + student.getStudentId() + "\n" + 
+				"Student Full Name: " + student.getFirstName() + " " + student.getLastName() + "\n" +
+				"Student Username: " + student.getUserName() + "\n" + 
+				"Student Coordinates (Latitude, Longitude): (" + student.getLatitude() + ", " + student.getLongitude() + ")\n" + 
+				"Student Zip Code: " + student.getZip();
+	}
+	
 	public LinkedList<ViewableCollege> getFavorites(ViewableStudent student) {
 		LinkedList<ViewableCollege> favoritesList = new LinkedList<>();
 		String user = student.getUserName();

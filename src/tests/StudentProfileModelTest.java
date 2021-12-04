@@ -50,6 +50,13 @@ public class StudentProfileModelTest {
 	}
 	
 	@Test
+	void testGetStudentInfo() {
+		String strStudentInfo = studentProfileModel.getStudentInfo(student);
+		System.out.println(strStudentInfo);
+		assertTrue(!strStudentInfo.equals(""));
+	}
+	
+	@Test
 	@Disabled("Successful test")
 	void testGetFavoritesNotFull() {
 		setPartialFavorites();
