@@ -129,7 +129,7 @@ public class CollegeSearchController implements Initializable {
 		
 		Alert favoritesAlert = new Alert(AlertType.INFORMATION);
 		favoritesAlert.setTitle("Favorites Alert");
-		favoritesAlert.setHeaderText("The college \"" + selectedCollege.getName() + "\n has been added to favorites!");
+		favoritesAlert.setHeaderText("The college \"" + selectedCollege.getName() + "\" has been added to favorites!");
 		favoritesAlert.setContentText("View your favorite colleges in your profile!");
 		favoritesAlert.showAndWait();
 	}

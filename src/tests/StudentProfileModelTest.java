@@ -50,6 +50,7 @@ public class StudentProfileModelTest {
 	}
 	
 	@Test
+	@Disabled("Successful test")
 	void testGetStudentInfo() {
 		String strStudentInfo = studentProfileModel.getStudentInfo(student);
 		System.out.println(strStudentInfo);
