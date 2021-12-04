@@ -230,7 +230,7 @@ public class CollegeSearchController implements Initializable {
 		}
 					
 		minStudentSize = Integer.parseInt(strMinStudentSize);
-		if(!maxCostDisabled) {
+		if(!maxStudentSizeDisabled) {
 			if(!collegeSearchModel.isValidInteger(strMaxStudentSize)) {
 				studentSizeAlert.setHeaderText("The maximum student size must be an integer!");
 				studentSizeAlert.showAndWait();
